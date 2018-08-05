@@ -1,0 +1,41 @@
+sudo: false
+
+branches:
+  only:
+  - master
+
+matrix:
+  include:
+  - language: go
+    go:
+      - 1.10.x
+    env:
+      - PROJECT=GATEWAY
+    # skip `go get`
+    install: true
+    before_script:
+      - cd service-gateway
+    script:
+      - make install.tool check test coverage build
+
+    after_success:
+      - echo "TODO_SLACK"
+
+  - language: node_js
+    node_js:
+      - "10"
+    cache:
+      directories:
+        - service-frontend/node_modules
+    env:
+      - PROJECT=FRONTEND
+    before_script:
+      - npm update -g @vue/cli
+      - cd service-frontend
+    script:
+      - npm i
+      - make build
+
+notifications:
+  email: false
+

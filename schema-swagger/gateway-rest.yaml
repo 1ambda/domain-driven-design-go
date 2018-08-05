@@ -1,0 +1,31 @@
+swagger: "2.0"
+info:
+  title: Gateway
+  version: 0.0.1
+schemes:
+- http
+consumes:
+- application/json
+produces:
+- application/json
+
+basePath: /api
+
+paths:
+  /auth/whoami:
+    $ref: "./gateway-auth.yaml#/api/whoami"
+    
+  /auth/register:
+    $ref: "./gateway-auth.yaml#/api/register"
+
+  /auth/login:
+    $ref: "./gateway-auth.yaml#/api/login"
+
+  /auth/logout:
+    $ref: "./gateway-auth.yaml#/api/logout"
+
+  /product:
+    $ref: "./gateway-product.yaml#/api/findAllProducts"
+
+  /product/{productID}:
+    $ref: "./gateway-product.yaml#/api/findOneProductWithOptions"

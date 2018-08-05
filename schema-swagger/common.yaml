@@ -1,0 +1,39 @@
+definitions:
+  Empty:
+    type: object
+
+  Exception:
+    type: object
+    properties:
+      timestamp:
+        type: string
+      code:
+        type: integer
+        format: int64
+      message:
+        type: string
+      type:
+        type: string
+        enum:
+          - BadRequest
+          - Unauthorized
+          - Forbidden
+          - NotFound
+          - InternalServer
+
+  Pagination:
+    type: object
+    required:
+      - itemCountPerPage  # limit
+      - currentPageOffset # offset
+      - totalItemCount    # count
+    properties:
+      itemCountPerPage:
+        type: integer
+        format: int32
+      currentPageOffset:
+        type: integer
+        format: int32
+      totalItemCount:
+        type: integer
+        format: int64

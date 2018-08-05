@@ -1,0 +1,106 @@
+api:
+
+  findOneProductWithOptions:
+    get:
+      tags:
+        - product
+      operationId: findOneWithOptions
+      parameters:
+        - in: path
+          name: productID
+          type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              product:
+                $ref: "./gateway-product.yaml#/definitions/Product"
+              options:
+                type: array
+                items:
+                  $ref: "./gateway-product.yaml#/definitions/ProductOption"
+        default:
+          description: error
+          schema:
+            $ref: "./common.yaml#/definitions/Exception"
+
+  findAllProducts:
+    get:
+      tags:
+        - product
+      operationId: findAll
+      parameters:
+        - name: itemCountPerPage
+          in: query
+          type: integer
+          format: int32
+          default: 10
+        - name: currentPageOffset
+          in: query
+          type: integer
+          format: int32
+          default: 0
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              rows:
+                type: array
+                items:
+                  $ref: "./gateway-product.yaml#/definitions/Product"
+              pagination:
+                $ref: "./common.yaml#/definitions/Pagination"
+        default:
+          description: error
+          schema:
+            $ref: "./common.yaml#/definitions/Exception"
+
+definitions:
+  Product:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      price:
+        type: string
+      description:
+        type: string
+      onSale:
+        type: string
+      categoryID:
+        type: string
+      categoryDisplayName:
+        type: string
+      categoryPath:
+        type: string
+      imageID:
+        type: string
+      imageType:
+        type: string
+      imagePath:
+        type: string
+      createdAt:
+        type: string
+      updatedAt:
+        type: string
+
+  ProductOption:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      price:
+        type: string
+      description:
+        type: string
+      onSale:
+        type: string
+

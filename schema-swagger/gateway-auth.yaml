@@ -1,0 +1,100 @@
+api:
+
+  register:
+    post:
+      tags:
+        - auth
+      operationId: Register
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: "./gateway-auth.yaml#/definitions/RegisterRequest"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "./gateway-auth.yaml#/definitions/AuthResponse"
+        default:
+          description: error
+          schema:
+            $ref: "./common.yaml#/definitions/Exception"
+  login:
+    post:
+      tags:
+        - auth
+      operationId: Login
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: "./gateway-auth.yaml#/definitions/LoginRequest"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "./gateway-auth.yaml#/definitions/AuthResponse"
+        default:
+          description: error
+          schema:
+            $ref: "./common.yaml#/definitions/Exception"
+
+  logout:
+    post:
+      tags:
+        - auth
+      operationId: Logout
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: "./common.yaml#/definitions/Empty"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "./common.yaml#/definitions/Empty"
+        default:
+          description: error
+          schema:
+            $ref: "./common.yaml#/definitions/Exception"
+
+  whoami:
+    get:
+      tags:
+        - auth
+      operationId: Whoami
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "./gateway-auth.yaml#/definitions/AuthResponse"
+        default:
+          description: error
+          schema:
+            $ref: "./common.yaml#/definitions/Exception"
+
+definitions:
+  LoginRequest:
+    type: object
+    properties:
+      uid:
+        type: string
+      password:
+        type: string
+
+  RegisterRequest:
+    type: object
+    properties:
+      uid:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+
+  AuthResponse:
+    type: object
+    properties:
+      uid:
+        type: string
