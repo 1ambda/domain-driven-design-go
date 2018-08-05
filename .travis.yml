@@ -37,6 +37,7 @@ matrix:
     script:
       - npm i
       - make build
+      - make docker.build
 
 notifications:
   email: false

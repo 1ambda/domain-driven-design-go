@@ -1,5 +1,13 @@
 TAG 		= "Makefile"
 
+VCS			= github.com
+REPOSITORY	= 1ambda/domain-driven-design-go
+MODULE		= service-frontend
+
+VERSION 		= $(shell cat ./VERSION)
+
+DOCKER			= docker
+
 NPM		= npm
 
 SWAGGER_CLIENT_DIR      = "./src/generated/swagger"
@@ -23,6 +31,12 @@ install:
 build:
 	@ echo "[$(TAG)] ($(shell TZ=UTC date -u '+%H:%M:%S')) - Building frontend distribution"
 	@ $(NPM) run build
+
+.PHONY: docker.build
+docker.build:
+	@ echo "[$(TAG)] ($(shell TZ=UTC date -u '+%H:%M:%S')) - Creating docker image: $(MODULE)"
+
+	$(DOCKER) build --build-arg SRC_ROOT="$(VCS)/$(REPOSITORY)/$(MODULE)" -t "$(VCS)/$(REPOSITORY)/$(MODULE):$(VERSION)" .
 
 .PHONY: run
 run:

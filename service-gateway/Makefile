@@ -116,7 +116,7 @@ build:
 
 .PHONY: docker.build
 docker.build:
-	@ echo "[$(TAG)] ($(shell TZ=UTC date -u '+%H:%M:%S')) - Creating docker image: $(APP)"
+	@ echo "[$(TAG)] ($(shell TZ=UTC date -u '+%H:%M:%S')) - Creating docker image: $(MODULE)"
 
 	@ rm -rf $(DOCKER_BUILD_SH) || true
 	@ $(eval LDFLAG := $(shell $(GOVVV) -flags -pkg $(shell go list ./internal/config)))
