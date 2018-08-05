@@ -120,7 +120,7 @@ docker.build:
 
 	@ rm -rf $(DOCKER_BUILD_SH) || true
 	@ $(eval LDFLAG := $(shell $(GOVVV) -flags -pkg $(shell go list ./internal/config)))
-	@ echo CGO_ENABLED=0 GOOS=$(DOCKER_OS) GOARCH=$(DOCKER_ARCH) $(GOBUILD) -i -ldflags=\"$(LDFLAG)\" -o $(BIN_DIR)/$(APP) -v $(CMD_DIR)/$(APP)/$(MAIN) > $(DOCKER_BUILD_SH)
+	@ echo CGO_ENABLED=1 GOOS=$(DOCKER_OS) GOARCH=$(DOCKER_ARCH) $(GOBUILD) -i -ldflags=\"$(LDFLAG)\" -o $(BIN_DIR)/$(APP) -v $(CMD_DIR)/$(APP)/$(MAIN) > $(DOCKER_BUILD_SH)
 	@ chmod +x $(DOCKER_BUILD_SH)
 
 	$(DOCKER) build --build-arg SRC_ROOT="$(VCS)/$(REPOSITORY)/$(MODULE)" -t "$(VCS)/$(REPOSITORY)/$(MODULE):$(VERSION)" .

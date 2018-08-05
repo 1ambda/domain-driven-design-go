@@ -26,9 +26,10 @@ services:
     ports:
     - 30001:30001
     environment:
-      MYSQL_HOST: mysql
       HOST: 0.0.0.0
       PORT: 30001
+      MYSQL_HOST: mysql
+      SCHEMA_ASSET_DIR: /app/asset/sql
     depends_on:
     - mysql
     - wait-dependencies

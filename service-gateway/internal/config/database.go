@@ -16,8 +16,6 @@ import (
 	"go.uber.org/zap"
 )
 
-const SqlSchemaDir = "../../asset/sql"
-
 type Database interface {
 	Get() *gorm.DB
 	EnableDebug()
@@ -121,9 +119,12 @@ func (d *MySQLDatabase) Migrate() {
 	dialect := "mysql"
 	rawDB := d.db.DB()
 
+	box := packr.NewBox(Env.SchemaAssetDir)
 	migrationSrc := &migrate.PackrMigrationSource{
-		Box: packr.NewBox(SqlSchemaDir),
+		Box: box,
 	}
+
+	logger.Infow("Packr Box for SQL Asset", "path", box.Path, "list", box.List())
 
 	migrations, err := migrationSrc.FindMigrations()
 	if err != nil {

@@ -8,7 +8,7 @@ ENV SRC_ROOT=${SRC_ROOT}
 
 WORKDIR /go/src/${SRC_ROOT}/
 COPY ./ /go/src/${SRC_ROOT}/
-RUN pwd && ls -al ./ && ls -al ./internal
+RUN pwd && ls -al
 RUN ./.BUILD.sh
 
 ##
@@ -20,7 +20,11 @@ RUN apk --no-cache add ca-certificates
 ARG SRC_ROOT
 ENV SRC_ROOT=${SRC_ROOT}
 
+# copy binary
 COPY --from=build /go/src/$SRC_ROOT/bin/server /app/
+# copy asset files
+COPY --from=build /go/src/$SRC_ROOT/asset /app/asset/
+RUN cd /app && ls -al
 
 EXPOSE 30001
 

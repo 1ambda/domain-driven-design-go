@@ -28,6 +28,7 @@ type Environment struct {
 	MysqlUserName string `envconfig:"MYSQL_USERNAME" default:"root"`
 	MysqlPassword string `envconfig:"MYSQL_PASSWORD" default:"root"`
 	MysqlDatabase string `envconfig:"MYSQL_DATABASE" default:"application"`
+	SchemaAssetDir string `envconfig:"SCHEMA_ASSET_DIR" default:"../../asset/sql"`
 
 	// server
 	CorsAllowURLs []string `envconfig:"GATEWAY_CORS_URLS" default:"http://localhost:8080,http://127.0.0.1:8080,http://0.0.0.0:8080"`
