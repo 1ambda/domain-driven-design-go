@@ -1,0 +1,34 @@
+version: '3.5'
+services:
+  wait-dependencies:
+    image: jwilder/dockerize
+    depends_on:
+    - mysql
+    command: dockerize -wait tcp://mysql:3306 -timeout 5m
+
+  service-frontend:
+    build:
+      context: ./service-frontend
+      dockerfile: Dockerfile
+    container_name: service-frontend
+    restart: always
+    ports:
+    - 8080:80
+
+  service-gateway:
+    build:
+      context: ./service-gateway
+      dockerfile: Dockerfile
+      args:
+        SRC_ROOT: ${GATEWAY_SRC_ROOT}
+    container_name: service-gateway
+    restart: always
+    ports:
+    - 30001:30001
+    environment:
+      MYSQL_HOST: mysql
+      HOST: 0.0.0.0
+      PORT: 30001
+    depends_on:
+    - mysql
+    - wait-dependencies

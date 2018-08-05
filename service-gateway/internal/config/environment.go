@@ -15,11 +15,12 @@ var (
 
 type Environment struct {
 	// general
+	Host     string `envconfig:"HOST" default:"localhost"` // parsed by go-swagger
+	RestPort int    `envconfig:"PORT" default:"30001"`     // parsed by go-swagger
+
 	Mode        string `envconfig:"SERVICE_MODE" default:"LOCAL"` // `LOCAL`, `TEST`, `DEV`, `PROD`
 	ServiceName string `envconfig:"SERVICE_NAME" default:"service-gateway"`
 	ServiceId   string `envconfig:"SERVICE_ID" default:"0"`
-	Host        string `envconfig:"SERVICE_HOST" default:"localhost"`
-	RestPort    int    `envconfig:"SERVICE_PORT_REST" default:"30001"`
 
 	// storage
 	MysqlHost     string `envconfig:"MYSQL_HOST" default:"localhost"`
@@ -29,12 +30,13 @@ type Environment struct {
 	MysqlDatabase string `envconfig:"MYSQL_DATABASE" default:"application"`
 
 	// server
-	CorsAllowUrl string `envconfig:"GATEWAY_CORS_URL" default:"localhost:8080"`
+	CorsAllowURLs []string `envconfig:"GATEWAY_CORS_URLS" default:"http://localhost:8080,http://127.0.0.1:8080,http://0.0.0.0:8080"`
 
 	// debugging
 	EnableDebugSQL      bool   `envconfig:"ENABLE_DEBUG_SQL" default:"true"`
 	EnableDebugHTTP     bool   `envconfig:"ENABLE_DEBUG_HTTP" default:"true"`
 	EnableSwaggerUI     bool   `envconfig:"ENABLE_SWAGGER_UI" default:"true"`
+	EnableDebugCors     bool   `envconfig:"ENABLE_DEBUG_CORS" default:"false"`
 	DisableSessionCheck bool   `envconfig:"DISABLE_SESSION_CHECK" default:"false"`
 	LogLevel            string `envconfig:"LOG_LEVEL" default:"INFO"` // `DEBUG`, `INFO`
 

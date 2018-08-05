@@ -7,13 +7,13 @@ import (
 	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/config"
 	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain/product"
 	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain/user"
-	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/rest"
 	"github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagserver"
 	"github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagserver/swagapi"
 	"github.com/go-openapi/loads"
 	"github.com/go-openapi/runtime"
 	"github.com/jessevdk/go-flags"
 	"github.com/rs/cors"
+	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/rest"
 )
 
 func main() {
@@ -39,6 +39,7 @@ func main() {
 	}
 	api := swagapi.NewGatewayAPI(swaggerSpec)
 	server := swagserver.NewServer(api)
+
 	defer server.Shutdown()
 
 	parser := flags.NewParser(server, flags.Default)
@@ -50,8 +51,6 @@ func main() {
 		}
 	}
 
-	server.Host = env.Host
-	server.Port = env.RestPort
 	if _, err := parser.Parse(); err != nil {
 		code := 1
 		if fe, ok := err.(*flags.Error); ok {
@@ -61,6 +60,7 @@ func main() {
 		}
 		os.Exit(code)
 	}
+
 	api.JSONConsumer = runtime.JSONConsumer()
 	api.JSONProducer = runtime.JSONProducer()
 	api.Logger = logger.Infof
@@ -89,7 +89,11 @@ func main() {
 	handler := api.Serve(nil)
 	handler = rest.InjectAuthMiddleware(sessionStore, handler)
 	handler = rest.InjectHttpLoggingMiddleware(handler)
-	handler = cors.AllowAll().Handler(handler)
+	handler = cors.New(cors.Options{
+		AllowedOrigins:   env.CorsAllowURLs,
+		AllowCredentials: true,
+		Debug:            env.EnableDebugCors,
+	}).Handler(handler)
 	server.SetHandler(handler)
 
 	_, cancel := context.WithCancel(context.Background())
