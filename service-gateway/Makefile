@@ -15,9 +15,18 @@ GOCMD		= go
 GODEP		= dep
 GOVVV		= govvv
 GOLINT		= gometalinter
-GOBUILD		= GOOS=$(GOOS) GOARCH=$(GOARCH) $(GOCMD) build
+GOBUILD		= $(GOCMD) build
 GOFMT		= $(GOCMD)fmt
 GOGET		= go get -u
+
+VCS			= github.com
+REPOSITORY	= 1ambda/domain-driven-design-go
+MODULE		= service-gateway
+
+DOCKER			= docker
+DOCKER_BUILD_SH = .BUILD.sh
+DOCKER_OS		= linux
+DOCKER_ARCH		= amd64
 
 MAIN		= main.go
 BIN_DIR		= bin
@@ -25,7 +34,6 @@ CMD_DIR		= cmd
 VENDOR_DIR	= vendor
 
 # Pure go sources (not vendored and not generated)
-PKG = github.com/1ambda/domain-driven-design-go
 LEFTPAREN:=(
 RIGHTPAREN:=)
 GOFILES = $(shell find . -type f -name '*.go' -not -path "./vendor/*" -not -path "./pkg/*" -not -path "./internal/mock*")
@@ -103,8 +111,20 @@ swagger: swagger.version swagger.server
 build:
 	@ echo "[$(TAG)] ($(shell TZ=UTC date -u '+%H:%M:%S')) - Building $(CMD_DIR)/$(APP)/$(MAIN)"
 	@ $(eval LDFLAG := $(shell $(GOVVV) -flags -pkg $(shell go list ./internal/config)))
-	@ $(GOBUILD) -race -i -ldflags="$(LDFLAG)" -o $(BIN_DIR)/$(APP) -v $(CMD_DIR)/$(APP)/$(MAIN)
+	@ GOOS=$(GOOS) GOARCH=$(GOARCH) $(GOBUILD) -race -i -ldflags="$(LDFLAG)" -o $(BIN_DIR)/$(APP) -v $(CMD_DIR)/$(APP)/$(MAIN)
 	@ echo ""
+
+.PHONY: docker.build
+docker.build:
+	@ echo "[$(TAG)] ($(shell TZ=UTC date -u '+%H:%M:%S')) - Creating docker image: $(APP)"
+
+	@ rm -rf $(DOCKER_BUILD_SH) || true
+	@ $(eval LDFLAG := $(shell $(GOVVV) -flags -pkg $(shell go list ./internal/config)))
+	@ echo CGO_ENABLED=0 GOOS=$(DOCKER_OS) GOARCH=$(DOCKER_ARCH) $(GOBUILD) -i -ldflags=\"$(LDFLAG)\" -o $(BIN_DIR)/$(APP) -v $(CMD_DIR)/$(APP)/$(MAIN) > $(DOCKER_BUILD_SH)
+	@ chmod +x $(DOCKER_BUILD_SH)
+
+	$(DOCKER) build --build-arg SRC_ROOT="$(VCS)/$(REPOSITORY)/$(MODULE)" -t "$(VCS)/$(REPOSITORY)/$(MODULE):$(VERSION)" .
+
 
 .PHONY: run
 run:

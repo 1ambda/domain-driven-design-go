@@ -1,4 +1,4 @@
-sudo: false
+sudo: required
 
 branches:
   only:
@@ -9,14 +9,16 @@ matrix:
   - language: go
     go:
       - 1.10.x
+    services:
+    - docker
     env:
       - PROJECT=GATEWAY
-    # skip `go get`
-    install: true
+    install: true # skip `go get`
     before_script:
       - cd service-gateway
     script:
       - make install.tool check test coverage build
+      - make docker.build
 
     after_success:
       - echo "TODO_SLACK"
