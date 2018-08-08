@@ -1,0 +1,13 @@
+steps:
+- name: 'ubuntu'
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    echo $PROJECT_ID
+    echo $COMMIT_SHA
+    echo $BUILD_ID
+    echo $SHORT_SHA
+    echo $BRANCH_NAME
+    echo $TAG_NAME
+    echo $REVISION_ID
