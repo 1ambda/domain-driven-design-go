@@ -4,9 +4,12 @@
 
 ![](https://raw.githubusercontent.com/1ambda/domain-driven-design-go/master/screenshots/g-street.png)
 
-- swagger codegen for server
-- swagger codegen for client
-- vue, Element UI
-- (TODO) bazel
 
+## Features
+
+- [GCP Kubernetes Engine managed by terraform]() 
+- [Swagger Codegen for Client (Typescript)]()
+- [Swagger Codegen for Server (Golang)]()
+- [Vue with Element UI]()
+- [Dockerized, Kubernetes-ed Applications]()
 
