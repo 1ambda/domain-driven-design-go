@@ -107,6 +107,7 @@ swagger-server: swagger.version
 .PHONY: swagger
 swagger: swagger.version swagger.server
 
+
 .PHONY: build
 build:
 	@ echo "[$(TAG)] ($(shell TZ=UTC date -u '+%H:%M:%S')) - Building $(CMD_DIR)/$(APP)/$(MAIN)"
@@ -114,14 +115,18 @@ build:
 	@ GOOS=$(GOOS) GOARCH=$(GOARCH) $(GOBUILD) -race -i -ldflags="$(LDFLAG)" -o $(BIN_DIR)/$(APP) -v $(CMD_DIR)/$(APP)/$(MAIN)
 	@ echo ""
 
-.PHONY: docker.build
-docker.build:
-	@ echo "[$(TAG)] ($(shell TZ=UTC date -u '+%H:%M:%S')) - Creating docker image: $(MODULE)"
+.PHONY: docker.prepare
+docker.prepare:
+	@ echo "[$(TAG)] ($(shell TZ=UTC date -u '+%H:%M:%S')) - Preparing docker build: $(MODULE)"
 
 	@ rm -rf $(DOCKER_BUILD_SH) || true
 	@ $(eval LDFLAG := $(shell $(GOVVV) -flags -pkg $(shell go list ./internal/config)))
 	@ echo CGO_ENABLED=0 GOOS=$(DOCKER_OS) GOARCH=$(DOCKER_ARCH) $(GOBUILD) -i -ldflags=\"$(LDFLAG)\" -o $(BIN_DIR)/$(APP) -v $(CMD_DIR)/$(APP)/$(MAIN) > $(DOCKER_BUILD_SH)
 	@ chmod +x $(DOCKER_BUILD_SH)
+
+.PHONY: docker.build
+docker.build: docker.prepare
+	@ echo "[$(TAG)] ($(shell TZ=UTC date -u '+%H:%M:%S')) - Creating docker image: $(MODULE)"
 
 	$(DOCKER) build --build-arg SRC_ROOT="$(VCS)/$(REPOSITORY)/$(MODULE)" -t "$(VCS)/$(REPOSITORY)/$(MODULE):$(VERSION)" .
 

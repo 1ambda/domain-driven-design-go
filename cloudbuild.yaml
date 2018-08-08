@@ -1,0 +1,56 @@
+steps:
+
+- id: frontend.docker.cache
+  name: 'gcr.io/cloud-builders/docker'
+  args:
+  - pull
+  - gcr.io/$PROJECT_ID/${_MODULE_FRONTEND}:latest
+
+- id: frontend.docker.build
+  name: 'gcr.io/cloud-builders/docker'
+  dir: '${_MODULE_FRONTEND}'
+  args:
+  - build
+  - --tag=gcr.io/$PROJECT_ID/${_MODULE_FRONTEND}:$COMMIT_SHA
+  - --tag=gcr.io/$PROJECT_ID/${_MODULE_FRONTEND}:latest
+  - .
+
+- id: gateway.docker.prepare
+  name: 'gcr.io/cloud-builders/go:debian'
+  entrypoint: 'bash'
+  dir: '${_MODULE_GATEWAY}'
+  args:
+  - '-c'
+  - |
+    apt-get update -y
+    apt-get install -y ca-certificates curl wget build-essential
+    make docker.prepare
+
+- id: gateway.docker.cache
+  name: 'gcr.io/cloud-builders/docker'
+  args:
+  - pull
+  - gcr.io/$PROJECT_ID/${_MODULE_GATEWAY}:latest
+
+- id: gateway.docker.build
+  name: 'gcr.io/cloud-builders/docker'
+  dir: '${_MODULE_GATEWAY}'
+  args:
+  - build
+  - --build-arg=SRC_ROOT=${_VCS}/${_REPOSITORY}/${_MODULE_GATEWAY}
+  - --cache-from=gcr.io/$PROJECT_ID/${_MODULE_GATEWAY}:latest
+  - --tag=gcr.io/$PROJECT_ID/${_MODULE_GATEWAY}:$COMMIT_SHA
+  - --tag=gcr.io/$PROJECT_ID/${_MODULE_GATEWAY}:latest
+  - .
+
+substitutions:
+  _VCS: github.com
+  _REPOSITORY: 1ambda/domain-driven-design-go
+  _MODULE_GATEWAY: service-gateway
+  _MODULE_FRONTEND: service-frontend
+
+images:
+- gcr.io/$PROJECT_ID/${_MODULE_GATEWAY}:$COMMIT_SHA
+- gcr.io/$PROJECT_ID/${_MODULE_GATEWAY}:latest
+- gcr.io/$PROJECT_ID/${_MODULE_FRONTEND}:$COMMIT_SHA
+- gcr.io/$PROJECT_ID/${_MODULE_FRONTEND}:latest
