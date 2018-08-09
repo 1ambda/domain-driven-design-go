@@ -8,7 +8,6 @@ ENV SRC_ROOT=${SRC_ROOT}
 
 WORKDIR /go/src/${SRC_ROOT}/
 COPY ./ /go/src/${SRC_ROOT}/
-RUN pwd && ls -al
 RUN ./.BUILD.sh
 
 ##
@@ -24,7 +23,6 @@ ENV SRC_ROOT=${SRC_ROOT}
 COPY --from=build /go/src/$SRC_ROOT/bin/server /app/
 # copy asset files
 COPY --from=build /go/src/$SRC_ROOT/asset /app/asset/
-RUN cd /app && ls -al
 
 EXPOSE 30001
 
