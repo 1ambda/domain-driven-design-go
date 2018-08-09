@@ -36,7 +36,7 @@ build:
 docker.build:
 	@ echo "[$(TAG)] ($(shell TZ=UTC date -u '+%H:%M:%S')) - Creating docker image: $(MODULE)"
 
-	$(DOCKER) build --build-arg SRC_ROOT="$(VCS)/$(REPOSITORY)/$(MODULE)" -t "$(VCS)/$(REPOSITORY)/$(MODULE):$(VERSION)" .
+	$(DOCKER) build -t "$(VCS)/$(REPOSITORY)/$(MODULE):$(VERSION)" .
 
 .PHONY: run
 run:
