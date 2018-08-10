@@ -82,5 +82,12 @@ resource "google_container_node_pool" "primary" {
       "terraform",
     ]
   }
+}
 
+resource "google_compute_global_address" "g-street" {
+  name = "g-street"
+}
+
+output "global_address_g-street" {
+  value = "${google_compute_global_address.g-street.address}"
 }
