@@ -55,6 +55,7 @@ metadata:
   name: echo
   annotations:
     kubernetes.io/ingress.class: gce
+    kubernetes.io/ingress.allow-http: "false"
     # gcloud compute addresses create g-street --global
     kubernetes.io/ingress.global-static-ip-name: "g-street"
 spec:
