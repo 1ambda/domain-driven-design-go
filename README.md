@@ -9,7 +9,7 @@
 
 - Reproducible Infra using Terraform on Google Cloud Platform
     * GKE (Kubernetes Engine)
-    * CloudSQL (MySQL)
+    * Cloud SQL (MySQL)
     * GCE Ingress (GLBC)
     * cert-manager on GKE 
     * Cloud Build
@@ -18,4 +18,4 @@
     * E-commerce Domain (Simplified)
     * Swagger Codegen for Server (Golang) 
     * Swagger Codegen for Client (Vue, TypeScript)
-    * Automated CD / CD Pipeline (GCB -> GCR -> Spinnaker -> GKE) 
+    * Automated CI / CD Pipeline (GCB -> GCR -> Spinnaker -> GKE) 
