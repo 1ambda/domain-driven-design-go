@@ -1,0 +1,19 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: 1ambda.io
+  namespace: default
+spec:
+  secretName: 1ambda-io-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: g-street.1ambda.io
+  dnsNames:
+  - g-street.1ambda.io
+  acme:
+    config:
+    - http01:
+        ingress: echo
+      domains:
+      - g-street.1ambda.io

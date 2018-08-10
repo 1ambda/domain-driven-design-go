@@ -7,8 +7,12 @@
 
 ## Features
 
-- [GCP Kubernetes Engine managed by terraform]() 
-- [Swagger Codegen for Client (Typescript)]()
+- GKE 
+- GCP CloudSQL
+- GCP Cloud Build
+- GCE Ingress
+- cert-manager on GKE 
+- Spinnaker on GCP
 - [Swagger Codegen for Server (Golang)]()
 - [Vue with Element UI]()
 - [Dockerized, Kubernetes-ed Applications]()
