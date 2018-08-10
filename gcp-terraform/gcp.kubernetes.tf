@@ -31,9 +31,12 @@ resource "google_container_cluster" "primary" {
   lifecycle {
     ignore_changes = [
       "node_pool",
+      "network",
+      "subnetwork",
     ]
   }
 
+  # defaul node is not auto-upgraded, auto-repaired
   remove_default_node_pool = true
   node_pool {
     name = "default-pool"
