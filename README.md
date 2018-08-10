@@ -9,7 +9,7 @@
 
 - Reproducible Infra using Terraform on Google Cloud Platform
     * GKE (Kubernetes Engine)
-    * Cloud SQL (MySQL)
+    * Cloud SQL (HA-RR MySQL)
     * GCE Ingress (GLBC)
     * cert-manager on GKE 
     * Cloud Build
