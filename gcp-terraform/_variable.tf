@@ -1,7 +1,7 @@
 locals {
-  project = "g-street"
+  service = "g-street"
 
-  cluster_name = "${local.project}-cluster"
+  cluster_name = "${local.service}-cluster"
 
   region = "asia-northeast1"
   zones = [
@@ -11,8 +11,9 @@ locals {
   ]
 
 
-  min_master_version = "1.9.7-gke.3"
-  node_version = "1.9.7-gke.3"
+  # https://cloud.google.com/kubernetes-engine/versioning-and-upgrades
+  min_master_version = "1.10.5-gke.3"
+  node_version = "1.10.5-gke.3"
 
   initial_node_count = 1
   min_node_count = 1
@@ -22,8 +23,8 @@ locals {
   disk_type = "pd-standard"
   machine_type = "n1-standard-1"
 
-  network_name = "${local.project}-network"
-  subnet_name = "${local.project}-subnet"
+  network_name = "${local.service}-network"
+  subnet_name = "${local.service}-subnet"
   ip_cidr_range = "10.127.0.0/20"
 }
 
