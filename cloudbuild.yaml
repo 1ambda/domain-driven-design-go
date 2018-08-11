@@ -1,5 +1,16 @@
 steps:
 
+- id: frontend.docker.prepare
+  name: 'gcr.io/cloud-builders/go:debian'
+  entrypoint: 'bash'
+  dir: '${_MODULE_FRONTEND}'
+  args:
+  - '-c'
+  - |
+    apt-get update -y
+    apt-get install -y ca-certificates curl wget build-essential
+    make docker.prepare
+
 - id: frontend.docker.cache
   name: 'gcr.io/cloud-builders/docker'
   args:
@@ -46,6 +57,7 @@ steps:
 substitutions:
   _VCS: github.com
   _REPOSITORY: 1ambda/domain-driven-design-go
+  _ENDPOINT_GATEWAY: http://g-street.1ambda.io:30001/api
   _MODULE_GATEWAY: service-gateway
   _MODULE_FRONTEND: service-frontend
 
