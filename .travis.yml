@@ -18,7 +18,7 @@ matrix:
       - cd service-gateway
     script:
       - make install.tool check test coverage build
-      - make docker.build
+      - make docker
 
     after_success:
       - echo "TODO_SLACK"
@@ -37,7 +37,7 @@ matrix:
     script:
       - npm i
       - make build
-      - make docker.build
+      - make docker
 
 notifications:
   email: false
