@@ -21,6 +21,10 @@ func InjectAuthMiddleware(sessionStore sessions.Store, h http.Handler) http.Hand
 			return
 		}
 
+		logger := config.GetLogger()
+
+		logger.Infow("request", r)
+
 		// if LB health check
 		if r.Method == http.MethodGet && r.URL.Path == "/" {
 			w.Header().Set("Content-Type", "application/json")
