@@ -2,19 +2,20 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: echo
+  name: service-frontend
 spec:
   replicas: 3
   template:
     metadata:
       labels:
-        app: echo
+        app: service-frontend
     spec:
       containers:
-      - name: echo
-        image: gcr.io/google-samples/hello-app:1.0
+      - name: service-frontend
+        image: gcr.io/zepl-test/service-frontend:latest
+        imagePullPolicy: Always
         ports:
-        - containerPort: 8080
+        - containerPort: 80
         env:
         - name: NODE_NAME
           valueFrom:
@@ -37,35 +38,34 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: echo
+  name: service-frontend
 spec:
   type: NodePort
   ports:
   - port: 80
-    targetPort: 8080
+    targetPort: 80
     protocol: TCP
     name: http
   selector:
-    app: echo
+    app: service-frontend
 
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: echo
+  name: "g-street"
   annotations:
     kubernetes.io/ingress.class: gce
-    kubernetes.io/ingress.allow-http: "false"
-    # gcloud compute addresses create g-street --global
+    kubernetes.io/ingress.allow-http: "true"
     kubernetes.io/ingress.global-static-ip-name: "g-street"
 spec:
   rules:
   - host: g-street.1ambda.io
     http:
       paths:
-      - path: /hello
+      - path: /*
         backend:
-          serviceName: echo
+          serviceName: service-frontend
           servicePort: 80
   tls:
   - secretName: 1ambda-io-tls
