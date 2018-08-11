@@ -23,6 +23,7 @@ func InjectAuthMiddleware(sessionStore sessions.Store, h http.Handler) http.Hand
 
 		logger := config.GetLogger()
 
+		// TODO return pod, commit, ...
 		logger.Infow("request",
 			"method", r.Method,
 			"url", r.URL.Path,
