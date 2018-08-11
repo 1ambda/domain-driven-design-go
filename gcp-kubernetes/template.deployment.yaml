@@ -79,7 +79,7 @@ spec:
           value: "true"
 
         - name: GATEWAY_CORS_URLS
-          value: "http://g-street.1ambda.io,http://localhost:8080,http://127.0.0.1:8080"
+          value: "http://g-street.1ambda.io,https://g-street.1ambda.io,http://localhost:8080,http://127.0.0.1:8080"
 
         - name: SCHEMA_ASSET_DIR
           value: "/app/asset/sql"
