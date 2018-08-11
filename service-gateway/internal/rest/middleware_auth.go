@@ -23,7 +23,7 @@ func InjectAuthMiddleware(sessionStore sessions.Store, h http.Handler) http.Hand
 
 		logger := config.GetLogger()
 
-		logger.Infow("request", r)
+		logger.Infow("request", "request", r)
 
 		// if LB health check
 		if r.Method == http.MethodGet && r.URL.Path == "/" {
