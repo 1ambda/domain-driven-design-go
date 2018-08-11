@@ -8,7 +8,7 @@ DOCKER	= docker
 NPM		= npm
 
 ENV_FILE = .env
-GATEWAY_ENDPOINT := $(or ${GATEWAY_ENDPOINT},${GATEWAY_ENDPOINT},http://localhost:30001/api)
+ENDPOINT_GATEWAY := $(or ${ENDPOINT_GATEWAY},${ENDPOINT_GATEWAY},http://localhost:30001/api)
 
 SWAGGER_CLIENT_DIR      = "./src/generated/swagger"
 SWAGGER_FILE       = "../schema-swagger/gateway-rest.yaml"
@@ -37,7 +37,7 @@ docker.prepare:
 	@ echo "[$(TAG)] ($(shell TZ=UTC date -u '+%H:%M:%S')) - Preparing docker build: $(MODULE)"
 
 	@ echo "[$(TAG)] ($(shell TZ=UTC date -u '+%H:%M:%S')) - GATEWAY_ENDPOINT: $(GATEWAY_ENDPOINT)"
-	@ echo VUE_APP_GATEWAY_ENDPOINT=$(GATEWAY_ENDPOINT) > $(ENV_FILE)
+	@ echo VUE_APP_GATEWAY_ENDPOINT=$(ENDPOINT_GATEWAY) > $(ENV_FILE)
 	@ echo VUE_APP_DEBUG=false >> $(ENV_FILE)
 	@ cat $(ENV_FILE)
 
