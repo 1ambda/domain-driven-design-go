@@ -125,11 +125,13 @@ docker.prepare:
 	@ chmod +x $(DOCKER_BUILD_SH)
 
 .PHONY: docker.build
-docker.build: docker.prepare
+docker.build:
 	@ echo "[$(TAG)] ($(shell TZ=UTC date -u '+%H:%M:%S')) - Creating docker image: $(MODULE)"
 
 	$(DOCKER) build --build-arg SRC_ROOT="$(VCS)/$(REPOSITORY)/$(MODULE)" -t "$(VCS)/$(REPOSITORY)/$(MODULE):$(VERSION)" .
 
+.PHONY: docker
+docker: docker.prepare docker.build
 
 .PHONY: run
 run:

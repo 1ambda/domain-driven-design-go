@@ -25,9 +25,9 @@ type Environment struct {
 	// storage
 	MysqlHost     string `envconfig:"MYSQL_HOST" default:"localhost"`
 	MysqlPort     string `envconfig:"MYSQL_PORT" default:"3306"`
+	MysqlDatabase string `envconfig:"MYSQL_DATABASE" default:"application"`
 	MysqlUserName string `envconfig:"MYSQL_USERNAME" default:"root"`
 	MysqlPassword string `envconfig:"MYSQL_PASSWORD" default:"root"`
-	MysqlDatabase string `envconfig:"MYSQL_DATABASE" default:"application"`
 	SchemaAssetDir string `envconfig:"SCHEMA_ASSET_DIR" default:"../../asset/sql"`
 
 	// server

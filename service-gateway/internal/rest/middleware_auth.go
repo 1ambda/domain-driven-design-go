@@ -21,6 +21,24 @@ func InjectAuthMiddleware(sessionStore sessions.Store, h http.Handler) http.Hand
 			return
 		}
 
+		logger := config.GetLogger()
+
+		// TODO return pod, commit, ...
+		logger.Infow("request",
+			"method", r.Method,
+			"url", r.URL.Path,
+			"host", r.URL.Host,
+			"raw_path", r.URL.RawPath,
+		)
+
+		// if LB health check
+		if r.Method == http.MethodGet && r.URL.Path == "/" {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(200)
+			json.NewEncoder(w).Encode(&struct{}{})
+			return
+		}
+
 		// disable swagger-ui based on the flag
 		if strings.HasPrefix(r.URL.Path, "/api/docs") && !env.EnableSwaggerUI {
 			message := fmt.Sprintf("Not Found: (%s) %s", r.Method, r.URL.Path)

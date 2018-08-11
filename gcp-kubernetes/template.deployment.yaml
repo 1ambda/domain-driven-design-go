@@ -1,0 +1,186 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: service-frontend
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: service-frontend
+    spec:
+      containers:
+      - name: service-frontend
+        image: gcr.io/zepl-test/service-frontend:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        env:
+        # specific env variables
+        # common env variables
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: service-gateway
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: service-gateway
+    spec:
+      containers:
+      - name: service-gateway
+        image: gcr.io/zepl-test/service-gateway:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 30001
+        env:
+        # specific env variables
+        - name: HOST
+          value: "0.0.0.0"
+        - name: PORT
+          value: "30001"
+        - name: SERVICE_MODE
+          value: "PROD"
+        - name: SERVICE_NAME
+          value: "service-gateway"
+        - name: SERVICE_ID
+          value: "0"
+
+        - name: LOG_LEVEL
+          value: "DEBUG"
+        - name: ENABLE_DEBUG_HTTP
+          value: "true"
+        - name: ENABLE_DEBUG_SQL
+          value: "true"
+        - name: ENABLE_DEBUG_CORS
+          value: "true"
+        - name: ENABLE_SWAGGER_UI
+          value: "true"
+
+        - name: GATEWAY_CORS_URLS
+          value: "http://g-street.1ambda.io,https://g-street.1ambda.io,http://localhost:8080,http://127.0.0.1:8080"
+
+        - name: SCHEMA_ASSET_DIR
+          value: "/app/asset/sql"
+
+        - name: MYSQL_HOST
+          valueFrom:
+            secretKeyRef:
+              name: database
+              key: DATABASE_HOST
+        - name: MYSQL_PORT
+          valueFrom:
+            secretKeyRef:
+              name: database
+              key: DATABASE_PORT
+        - name: MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: database
+              key: DATABASE_NAME
+        - name: MYSQL_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: database
+              key: DATABASE_USERNAME
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database
+              key: DATABASE_PASSWORD
+
+        # common env variables
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-frontend
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: http
+  selector:
+    app: service-frontend
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-gateway
+spec:
+  type: NodePort
+  ports:
+  - port: 30001
+    targetPort: 30001
+    protocol: TCP
+    name: http
+  selector:
+    app: service-gateway
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: "g-street"
+  annotations:
+    kubernetes.io/ingress.class: gce
+    kubernetes.io/ingress.allow-http: "true"
+    kubernetes.io/ingress.global-static-ip-name: "g-street"
+spec:
+  rules:
+  - host: g-street.1ambda.io
+    http:
+      paths:
+      - path: /api/*
+        backend:
+          serviceName: service-gateway
+          servicePort: 30001
+      - path: /*
+        backend:
+          serviceName: service-frontend
+          servicePort: 80
+  tls:
+  - secretName: 1ambda-io-tls
+    hosts:
+    - g-street.1ambda.io
