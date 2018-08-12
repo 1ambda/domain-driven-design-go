@@ -12,8 +12,8 @@ import (
 	"github.com/go-openapi/loads"
 	"github.com/go-openapi/runtime"
 	"github.com/jessevdk/go-flags"
+		"github.com/1ambda/domain-driven-design-go/service-gateway/internal/rest"
 	"github.com/rs/cors"
-	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/rest"
 )
 
 func main() {
@@ -39,6 +39,7 @@ func main() {
 	}
 	api := swagapi.NewGatewayAPI(swaggerSpec)
 	server := swagserver.NewServer(api)
+	server.Port = env.RestPort
 
 	defer server.Shutdown()
 
@@ -88,12 +89,13 @@ func main() {
 
 	handler := api.Serve(nil)
 	handler = rest.InjectAuthMiddleware(sessionStore, handler)
-	handler = rest.InjectHttpLoggingMiddleware(handler)
 	handler = cors.New(cors.Options{
 		AllowedOrigins:   env.CorsAllowURLs,
 		AllowCredentials: true,
 		Debug:            env.EnableDebugCors,
 	}).Handler(handler)
+	handler = rest.InjectHttpLoggingMiddleware(handler)
+	handler = rest.InjectHealthCheckMiddleware(handler)
 	server.SetHandler(handler)
 
 	_, cancel := context.WithCancel(context.Background())

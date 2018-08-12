@@ -22,6 +22,12 @@ type Environment struct {
 	ServiceName string `envconfig:"SERVICE_NAME" default:"service-gateway"`
 	ServiceId   string `envconfig:"SERVICE_ID" default:"0"`
 
+	// deployment
+	NodeName string `envconfig:"NODE_NAME" default:""`
+	PodName string `envconfig:"POD_NAME" default:""`
+	PodNamespace string `envconfig:"POD_NAMESPACE" default:""`
+	PodIP string `envconfig:"POD_IP" default:""`
+
 	// storage
 	MysqlHost     string `envconfig:"MYSQL_HOST" default:"localhost"`
 	MysqlPort     string `envconfig:"MYSQL_PORT" default:"3306"`
@@ -31,7 +37,7 @@ type Environment struct {
 	SchemaAssetDir string `envconfig:"SCHEMA_ASSET_DIR" default:"../../asset/sql"`
 
 	// server
-	CorsAllowURLs []string `envconfig:"GATEWAY_CORS_URLS" default:"http://localhost:8080,http://127.0.0.1:8080,http://0.0.0.0:8080"`
+	CorsAllowURLs []string `envconfig:"GATEWAY_COR_URLS" default:"http://localhost:8080,http://127.0.0.1:8080,http://0.0.0.0:8080"`
 
 	// debugging
 	EnableDebugSQL      bool   `envconfig:"ENABLE_DEBUG_SQL" default:"true"`

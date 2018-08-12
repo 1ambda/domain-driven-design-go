@@ -44,9 +44,8 @@ func InjectHttpLoggingMiddleware(next http.Handler) http.Handler {
 	logger := config.GetLogger().With("service_name", env.ServiceName, "service_id", env.ServiceId)
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
-		// if cors
-		if r.Method == http.MethodOptions && r.Header.Get("Access-Control-Request-Method") != "" {
+		// Skip logging for CORS requests
+		if r.Method == http.MethodOptions {
 			next.ServeHTTP(w, r)
 			return
 		}
@@ -55,8 +54,6 @@ func InjectHttpLoggingMiddleware(next http.Handler) http.Handler {
 			next.ServeHTTP(w, r)
 			return
 		}
-
-		// TODO: security flag + session check middleware
 
 		start := time.Now()
 		sw := statusWriter{ResponseWriter: w}
@@ -70,6 +67,7 @@ func InjectHttpLoggingMiddleware(next http.Handler) http.Handler {
 			"remote", r.RemoteAddr,
 			"request", r.RequestURI,
 			"method", r.Method,
+			"path", r.URL.Path,
 		)
 	})
 }
