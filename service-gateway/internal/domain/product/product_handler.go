@@ -61,14 +61,13 @@ func (h *productHandlerImpl) Configure(registry *swagapi.GatewayAPI) {
 		func(params productapi.FindOneWithOptionsParams) middleware.Responder {
 			if params.ProductID == nil {
 				err := errors.New("Got invalid Product ID")
-				ex := e.NewBadRequestException(err)
+				ex := e.NewBadRequestException(err, "Can't find empty Product")
 				return productapi.NewFindOneWithOptionsDefault(ex.StatusCode()).WithPayload(ex.ToSwaggerError())
 			}
 
 			var productID, err = strconv.ParseUint(*params.ProductID, 10, 64)
 			if err != nil {
-				wrap := errors.Wrap(err, "Failed to parse Product ID")
-				ex := e.NewInternalServerException(wrap)
+				ex := e.NewInternalServerException(err, "Failed to find Product")
 				return productapi.NewFindOneWithOptionsDefault(ex.StatusCode()).WithPayload(ex.ToSwaggerError())
 			}
 

@@ -9,6 +9,9 @@ import (
 	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/config"
 	"github.com/jinzhu/gorm"
 	"github.com/ory/dockertest"
+	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain/user"
+	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain/product"
+	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain/order"
 )
 
 func PrepareDatabase() (*dockertest.Pool, *dockertest.Resource, string) {
@@ -61,7 +64,7 @@ type DatabaseContainer struct {
 func GetDatabaseContainer() DatabaseContainer {
 	pool, resource, dbHostPort := PrepareDatabase()
 	config.Env.MysqlPort = dbHostPort
-	db := config.GetDatabase()
+	db := config.GetDatabase(MigrateCallback)
 
 	return DatabaseContainer{db, pool, resource}
 }
@@ -74,5 +77,19 @@ func GetTestDatabase(debug bool) *gorm.DB {
 	config.Env.Mode = "TEST"
 	config.Env.EnableDebugSQL = debug
 
-	return config.GetDatabase()
+	return config.GetDatabase(MigrateCallback)
+}
+
+func MigrateCallback(db *gorm.DB) {
+	// Migrate only when using SQLite
+	// for MySQL, will use flyway
+	db.Set("gorm:table_options", "").AutoMigrate(
+		&user.User{},
+		&user.AuthIdentity{},
+		&product.Category{},
+		&product.Image{},
+		&product.Product{},
+		&order.Order{},
+		&order.OrderDetail{},
+	)
 }

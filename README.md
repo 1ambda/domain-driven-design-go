@@ -20,6 +20,7 @@
     * Swagger Codegen for Client (Vue, TypeScript)
     * Automated CI / CD Pipeline (GCB -> GCR -> Spinnaker -> GKE) 
     
+<br/>
     
 ## Running All Services 
 
@@ -32,6 +33,7 @@
 $ go get -g github.com/1ambda/domain-driven-design-go
 $ cd $GOPATH/src/github.com/1ambda/domain-driven-design-go 
 
+$ go get github.com/ahmetb/govvv 
 $ make compose.all
 
 # visit http://localhost:8080

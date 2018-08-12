@@ -3,8 +3,7 @@ package product
 import (
 	e "github.com/1ambda/domain-driven-design-go/service-gateway/internal/exception"
 	"github.com/jinzhu/gorm"
-	"github.com/pkg/errors"
-)
+	)
 
 type Repository interface {
 	AddCategory(record *Category) (*Category, e.Exception)
@@ -30,8 +29,7 @@ func (r *repositoryImpl) AddCategory(record *Category) (*Category, e.Exception) 
 	err := r.db.Create(record).Error
 
 	if err != nil {
-		wrap := errors.Wrap(err, "Failed to create Category")
-		return nil, e.NewInternalServerException(wrap)
+		return nil, e.NewInternalServerException(err, "Failed to create Category")
 	}
 
 	return record, nil
@@ -41,8 +39,7 @@ func (r *repositoryImpl) AddImage(record *Image) (*Image, e.Exception) {
 	err := r.db.Create(record).Error
 
 	if err != nil {
-		wrap := errors.Wrap(err, "Failed to create Image")
-		return nil, e.NewInternalServerException(wrap)
+		return nil, e.NewInternalServerException(err, "Failed to create Image")
 	}
 
 	return record, nil
@@ -53,13 +50,11 @@ func (r *repositoryImpl) FindCategoryById(id uint) (*Category, e.Exception) {
 	err := r.db.Where("id = ?", id).First(record).Error
 
 	if err != nil {
-		wrap := errors.Wrap(err, "Failed to find Category by id")
-
 		if gorm.IsRecordNotFoundError(err) {
-			return nil, e.NewNotFoundException(wrap)
+			return nil, e.NewNotFoundException(err, "Failed to find Category does not exist")
 		}
 
-		return nil, e.NewInternalServerException(wrap)
+		return nil, e.NewInternalServerException(err, "Failed to find Category")
 	}
 
 	return record, nil
@@ -70,13 +65,11 @@ func (r *repositoryImpl) FindImageById(id uint) (*Image, e.Exception) {
 	err := r.db.Where("id = ?", id).First(record).Error
 
 	if err != nil {
-		wrap := errors.Wrap(err, "Failed to find Image by id")
-
 		if gorm.IsRecordNotFoundError(err) {
-			return nil, e.NewNotFoundException(wrap)
+			return nil, e.NewNotFoundException(err, "Failed to find Image does not exist")
 		}
 
-		return nil, e.NewInternalServerException(wrap)
+		return nil, e.NewInternalServerException(err, "Failed to find Image")
 	}
 
 	return record, nil
@@ -86,8 +79,7 @@ func (r *repositoryImpl) AddProduct(record *Product) (*Product, e.Exception) {
 	err := r.db.Create(record).Error
 
 	if err != nil {
-		wrap := errors.Wrap(err, "Failed to create Product")
-		return nil, e.NewInternalServerException(wrap)
+		return nil, e.NewInternalServerException(err, "Failed to create Product")
 	}
 
 	return record, nil
@@ -104,13 +96,12 @@ func (r *repositoryImpl) FindProductWithOptions(id uint) (*Product, []*ProductOp
 		Error
 
 	if err != nil {
-		wrap := errors.Wrap(err, "Failed to find Product by id")
 		tx.Rollback()
 
 		if gorm.IsRecordNotFoundError(err) {
-			return nil, nil, e.NewNotFoundException(wrap)
+			return nil, nil, e.NewNotFoundException(err, "Failed to find Product does not exist")
 		}
-		return nil, nil, e.NewInternalServerException(wrap)
+		return nil, nil, e.NewInternalServerException(err, "Failed to find Product")
 	}
 
 	var productOptions []*ProductOption
@@ -120,9 +111,8 @@ func (r *repositoryImpl) FindProductWithOptions(id uint) (*Product, []*ProductOp
 		Find(&productOptions).
 		Error; err != nil {
 
-		wrap := errors.Wrap(err, "Failed to get ProductOption list")
 		tx.Rollback()
-		return nil, nil, e.NewInternalServerException(wrap)
+		return nil, nil, e.NewInternalServerException(err, "Failed to get ProductOption list")
 	}
 
 	tx.Commit()
@@ -152,8 +142,7 @@ func (r *repositoryImpl) FindAllProducts(itemCountPerPage int, currentPageOffset
 		Error; err != nil {
 
 		tx.Rollback()
-		wrap := errors.Wrap(err, "Failed to get Product list")
-		return 0, nil, e.NewInternalServerException(wrap)
+		return 0, nil, e.NewInternalServerException(err, "Failed to get Product list")
 	}
 
 	tx.Commit()

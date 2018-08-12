@@ -4,6 +4,8 @@ import (
 	"time"
 
 	dto "github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagmodel"
+	"strings"
+	"github.com/pkg/errors"
 )
 
 const CodeBadRequest = 400
@@ -17,6 +19,8 @@ type Exception interface {
 	StatusCode() int
 	Timestamp() *time.Time
 	ToSwaggerError() *dto.Exception
+	Error() string
+	UpdateMessage(message string) string
 
 	IsBadRequestException() bool
 	IsUnauthorizedException() bool
@@ -25,26 +29,39 @@ type Exception interface {
 	IsInternalServerException() bool
 }
 
-type appException struct {
+type Failure struct {
 	cause      error
 	statusCode int
 	timestamp  time.Time
 }
 
-func (a *appException) Cause() error {
+func (a *Failure) UpdateMessage(message string) string {
+	wrap := errors.Wrap(a.cause, message)
+	a.cause = wrap
+	return wrap.Error()
+}
+
+func (a *Failure) Error() string {
+	return a.cause.Error()
+}
+
+func (a *Failure) Cause() error {
 	return a.cause
 }
 
-func (a *appException) StatusCode() int {
+func (a *Failure) StatusCode() int {
 	return a.statusCode
 }
 
-func (a *appException) Timestamp() *time.Time {
+func (a *Failure) Timestamp() *time.Time {
 	return &a.timestamp
 }
 
-func (a *appException) ToSwaggerError() *dto.Exception {
+func (a *Failure) ToSwaggerError() *dto.Exception {
 	errorType := ""
+
+	message := strings.Split(a.cause.Error(), ":")[0]
+	// message = errors.Cause(a.cause).Error()
 
 	switch status := a.statusCode; status {
 	case CodeBadRequest:
@@ -65,67 +82,77 @@ func (a *appException) ToSwaggerError() *dto.Exception {
 
 	return &dto.Exception{
 		Code:      int64(a.statusCode),
-		Message:   a.cause.Error(),
+		Message:   message,
 		Timestamp: a.timestamp.UTC().String(),
 		Type:      errorType,
 	}
 }
 
-func (a *appException) IsBadRequestException() bool {
+func (a *Failure) IsBadRequestException() bool {
 	return a.statusCode == CodeBadRequest
 }
 
-func NewBadRequestException(err error) Exception {
-	return &appException{
-		cause:      err,
+func NewBadRequestException(err error, message string) Exception {
+	wrap := errors.Wrap(err, message)
+
+	return &Failure{
+		cause:      wrap,
 		statusCode: CodeBadRequest,
 		timestamp:  time.Now(),
 	}
 }
 
-func (a *appException) IsUnauthorizedException() bool {
+func (a *Failure) IsUnauthorizedException() bool {
 	return a.statusCode == CodeUnauthorized
 }
 
-func NewUnauthorizedException(err error) Exception {
-	return &appException{
-		cause:      err,
+func NewUnauthorizedException(err error, message string) Exception {
+	wrap := errors.Wrap(err, message)
+
+	return &Failure{
+		cause:      wrap,
 		statusCode: CodeUnauthorized,
 		timestamp:  time.Now(),
 	}
 }
 
-func (a *appException) IsForbiddenException() bool {
+func (a *Failure) IsForbiddenException() bool {
 	return a.statusCode == CodeForbidden
 }
 
-func NewForbiddenException(err error) Exception {
-	return &appException{
-		cause:      err,
+func NewForbiddenException(err error, message string) Exception {
+	wrap := errors.Wrap(err, message)
+
+	return &Failure{
+		cause:      wrap,
 		statusCode: CodeForbidden,
 		timestamp:  time.Now(),
 	}
 }
 
-func (a *appException) IsNotFoundException() bool {
+func (a *Failure) IsNotFoundException() bool {
 	return a.statusCode == CodeNotFound
 }
 
-func NewNotFoundException(err error) Exception {
-	return &appException{
-		cause:      err,
+func NewNotFoundException(err error, message string) Exception {
+	wrap := errors.Wrap(err, message)
+
+	return &Failure{
+		cause:      wrap,
 		statusCode: CodeNotFound,
 		timestamp:  time.Now(),
 	}
 }
 
-func (a *appException) IsInternalServerException() bool {
+func (a *Failure) IsInternalServerException() bool {
 	return a.statusCode == CodeInternalServer
 }
 
-func NewInternalServerException(err error) Exception {
-	return &appException{
-		cause:      err,
+func NewInternalServerException(err error, message string) Exception {
+	wrap := errors.Wrap(err, message)
+
+	return &Failure{
+		cause:      wrap,
 		statusCode: CodeInternalServer,
 		timestamp:  time.Now(),
 	}
