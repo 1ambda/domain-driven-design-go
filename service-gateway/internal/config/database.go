@@ -11,15 +11,12 @@ import (
 	"github.com/rubenv/sql-migrate"
 	"github.com/satori/go.uuid"
 	"go.uber.org/zap"
-	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain/user"
-	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain/product"
-	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain/order"
 )
 
 type Database interface {
 	Get() *gorm.DB
 	EnableDebug()
-	Migrate()
+	Migrate(func(db *gorm.DB) ())
 	Dialect() string
 }
 
@@ -65,18 +62,9 @@ func (d *SQLiteDatabase) Dialect() string {
 	return d.dialect
 }
 
-func (d *SQLiteDatabase) Migrate() {
+func (d *SQLiteDatabase) Migrate(callback func(db *gorm.DB) ()) {
 	db := d.db
-	option := ""
-	db.Set("gorm:table_options", option).AutoMigrate(
-		&user.User{},
-		&user.AuthIdentity{},
-		&product.Category{},
-		&product.Image{},
-		&product.Product{},
-		&order.Order{},
-		&order.OrderDetail{},
-	)
+	callback(db)
 
 	// SQLite doesn't support `ADD CONSTRAINT`
 	// - https://github.com/jinzhu/gorm/blob/b2b568daa8e27966c39c942e5aefc74bcc8af88d/association_test.go#L846
@@ -113,12 +101,13 @@ func (d *MySQLDatabase) Dialect() string {
 	return d.dialect
 }
 
-func (d *MySQLDatabase) Migrate() {
+func (d *MySQLDatabase) Migrate(callback func(db *gorm.DB) ()) {
 	logger := getDbLogger()
 
 	dialect := "mysql"
 	rawDB := d.db.DB()
 
+	// do not execute `callback` for MySQL
 	box := packr.NewBox(Env.SchemaAssetDir)
 	migrationSrc := &migrate.PackrMigrationSource{
 		Box: box,
@@ -183,7 +172,7 @@ func (d *MySQLDatabase) EnableDebug() {
 	d.db.Debug()
 }
 
-func GetDatabase() *gorm.DB {
+func GetDatabase(callback func(db *gorm.DB) ()) *gorm.DB {
 	logger := getDbLogger()
 
 	env := Env
@@ -205,7 +194,7 @@ func GetDatabase() *gorm.DB {
 	}
 
 	// migration
-	database.Migrate()
+	database.Migrate(callback)
 
 	return database.Get()
 }

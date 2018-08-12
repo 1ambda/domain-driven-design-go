@@ -81,17 +81,17 @@ var _ = Describe("AuthHandler", func() {
 		})
 
 		When("AuthIdentity does not exist", func() {
-			It("should return UnauthorizedException", func() {
+			It("should return BadRequestException", func() {
 				claim, ex := handler.Login("uid", "password")
 
 				Expect(claim).Should(BeNil())
 				Expect(ex).ShouldNot(BeNil())
-				Expect(ex.IsUnauthorizedException()).Should(BeTrue())
+				Expect(ex.IsBadRequestException()).Should(BeTrue())
 			})
 		})
 
 		When("encrypted password is different", func() {
-			It("should return UnauthorizedException", func() {
+			It("should return BadRequestException", func() {
 				// given
 				uid := "user"
 				email := "me@email.com"
@@ -107,7 +107,7 @@ var _ = Describe("AuthHandler", func() {
 				// then
 				Expect(claim).Should(BeNil())
 				Expect(ex2).ShouldNot(BeNil())
-				Expect(ex2.IsUnauthorizedException()).Should(BeTrue())
+				Expect(ex2.IsBadRequestException()).Should(BeTrue())
 			})
 		})
 

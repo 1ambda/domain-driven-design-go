@@ -14,6 +14,7 @@ import (
 	"github.com/jessevdk/go-flags"
 		"github.com/1ambda/domain-driven-design-go/service-gateway/internal/rest"
 	"github.com/rs/cors"
+	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/test"
 )
 
 func main() {
@@ -70,7 +71,7 @@ func main() {
 	sessionStore := user.NewSessionStore()
 
 	// configure database
-	db := config.GetDatabase()
+	db := config.GetDatabase(test.MigrateCallback)
 
 	// configure REST server handlers, middlewares
 	logger.Info("Configure REST API handlers")
