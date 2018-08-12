@@ -5,7 +5,8 @@ import (
 
 	dto "github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagmodel"
 	"strings"
-	)
+	"github.com/pkg/errors"
+)
 
 const CodeBadRequest = 400
 const CodeUnauthorized = 401
@@ -19,6 +20,7 @@ type Exception interface {
 	Timestamp() *time.Time
 	ToSwaggerError() *dto.Exception
 	Error() string
+	UpdateMessage(message string) string
 
 	IsBadRequestException() bool
 	IsUnauthorizedException() bool
@@ -31,6 +33,12 @@ type Failure struct {
 	cause      error
 	statusCode int
 	timestamp  time.Time
+}
+
+func (a *Failure) UpdateMessage(message string) string {
+	wrap := errors.Wrap(a.cause, message)
+	a.cause = wrap
+	return wrap.Error()
 }
 
 func (a *Failure) Error() string {
@@ -84,9 +92,11 @@ func (a *Failure) IsBadRequestException() bool {
 	return a.statusCode == CodeBadRequest
 }
 
-func NewBadRequestException(err error) Exception {
+func NewBadRequestException(err error, message string) Exception {
+	wrap := errors.Wrap(err, message)
+
 	return &Failure{
-		cause:      err,
+		cause:      wrap,
 		statusCode: CodeBadRequest,
 		timestamp:  time.Now(),
 	}
@@ -96,9 +106,11 @@ func (a *Failure) IsUnauthorizedException() bool {
 	return a.statusCode == CodeUnauthorized
 }
 
-func NewUnauthorizedException(err error) Exception {
+func NewUnauthorizedException(err error, message string) Exception {
+	wrap := errors.Wrap(err, message)
+
 	return &Failure{
-		cause:      err,
+		cause:      wrap,
 		statusCode: CodeUnauthorized,
 		timestamp:  time.Now(),
 	}
@@ -108,9 +120,11 @@ func (a *Failure) IsForbiddenException() bool {
 	return a.statusCode == CodeForbidden
 }
 
-func NewForbiddenException(err error) Exception {
+func NewForbiddenException(err error, message string) Exception {
+	wrap := errors.Wrap(err, message)
+
 	return &Failure{
-		cause:      err,
+		cause:      wrap,
 		statusCode: CodeForbidden,
 		timestamp:  time.Now(),
 	}
@@ -120,9 +134,11 @@ func (a *Failure) IsNotFoundException() bool {
 	return a.statusCode == CodeNotFound
 }
 
-func NewNotFoundException(err error) Exception {
+func NewNotFoundException(err error, message string) Exception {
+	wrap := errors.Wrap(err, message)
+
 	return &Failure{
-		cause:      err,
+		cause:      wrap,
 		statusCode: CodeNotFound,
 		timestamp:  time.Now(),
 	}
@@ -132,9 +148,11 @@ func (a *Failure) IsInternalServerException() bool {
 	return a.statusCode == CodeInternalServer
 }
 
-func NewInternalServerException(err error) Exception {
+func NewInternalServerException(err error, message string) Exception {
+	wrap := errors.Wrap(err, message)
+
 	return &Failure{
-		cause:      err,
+		cause:      wrap,
 		statusCode: CodeInternalServer,
 		timestamp:  time.Now(),
 	}

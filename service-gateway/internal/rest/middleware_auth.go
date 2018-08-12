@@ -19,7 +19,7 @@ func InjectAuthMiddleware(sessionStore sessions.Store, next http.Handler) http.H
 		if strings.HasPrefix(r.URL.Path, "/api/docs") && !env.EnableSwaggerUI {
 			message := fmt.Sprintf("Not Found: (%s) %s", r.Method, r.URL.Path)
 			err := errors.New(message)
-			ex := e.NewNotFoundException(err)
+			ex := e.NewNotFoundException(err, message)
 
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(ex.StatusCode())
@@ -46,7 +46,7 @@ func InjectAuthMiddleware(sessionStore sessions.Store, next http.Handler) http.H
 		if authenticated, _ := user.IsAuthenticated(session); !authenticated {
 			message := fmt.Sprintf("Not Authenticated: (%s) %s", r.Method, r.URL.Path)
 			err := errors.New(message)
-			ex := e.NewUnauthorizedException(err)
+			ex := e.NewUnauthorizedException(err, message)
 
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(ex.StatusCode())

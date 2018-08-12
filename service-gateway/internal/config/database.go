@@ -3,9 +3,6 @@ package config
 import (
 	"fmt"
 
-	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain/order"
-	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain/product"
-	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain/user"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gobuffalo/packr"
 	"github.com/jinzhu/gorm"
@@ -14,6 +11,9 @@ import (
 	"github.com/rubenv/sql-migrate"
 	"github.com/satori/go.uuid"
 	"go.uber.org/zap"
+	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain/user"
+	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain/product"
+	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain/order"
 )
 
 type Database interface {

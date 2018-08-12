@@ -3,7 +3,6 @@ package order
 import (
 	e "github.com/1ambda/domain-driven-design-go/service-gateway/internal/exception"
 	"github.com/jinzhu/gorm"
-	"github.com/pkg/errors"
 )
 
 type Repository interface {
@@ -25,8 +24,7 @@ func (r *repositoryImpl) AddOrder(record *Order) (*Order, e.Exception) {
 	err := r.db.Create(record).Error
 
 	if err != nil {
-		wrap := errors.Wrap(err, "Failed to create Order")
-		return nil, e.NewInternalServerException(wrap)
+		return nil, e.NewInternalServerException(err, "Failed to create Order")
 	}
 
 	return record, nil
@@ -37,13 +35,11 @@ func (r *repositoryImpl) FindOrderById(id uint) (*Order, e.Exception) {
 	err := r.db.Where("id = ?", id).First(record).Error
 
 	if err != nil {
-		wrap := errors.Wrap(err, "Failed to find Order")
-
 		if gorm.IsRecordNotFoundError(err) {
-			return nil, e.NewNotFoundException(wrap)
+			return nil, e.NewNotFoundException(err, "Failed to find Order does not exist")
 		}
 
-		return nil, e.NewInternalServerException(wrap)
+		return nil, e.NewInternalServerException(err, "Failed to find Order")
 	}
 
 	return record, nil
@@ -53,8 +49,7 @@ func (r *repositoryImpl) AddOrderDetail(record *OrderDetail) (*OrderDetail, e.Ex
 	err := r.db.Create(record).Error
 
 	if err != nil {
-		wrap := errors.Wrap(err, "Failed to create OrderDetail")
-		return nil, e.NewInternalServerException(wrap)
+		return nil, e.NewInternalServerException(err, "Failed to create OrderDetail")
 	}
 
 	return record, nil
@@ -65,13 +60,11 @@ func (r *repositoryImpl) FindOrderDetailById(id uint) (*OrderDetail, e.Exception
 	err := r.db.Where("id = ?", id).First(record).Error
 
 	if err != nil {
-		wrap := errors.Wrap(err, "Failed to find OrderDetail")
-
 		if gorm.IsRecordNotFoundError(err) {
-			return nil, e.NewNotFoundException(wrap)
+			return nil, e.NewNotFoundException(err, "Failed to find OrderDetail does not exist")
 		}
 
-		return nil, e.NewInternalServerException(wrap)
+		return nil, e.NewInternalServerException(err, "Failed to find OrderDEtail")
 	}
 
 	return record, nil

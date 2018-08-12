@@ -3,8 +3,6 @@ package user
 import (
 	"strings"
 
-	"encoding/json"
-	"fmt"
 	e "github.com/1ambda/domain-driven-design-go/service-gateway/internal/exception"
 	dto "github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagmodel"
 	"github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagserver/swagapi"
@@ -14,7 +12,7 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/pkg/errors"
 	"net/http"
-)
+	)
 
 type AuthHandler interface {
 	Configure(handlerRegistry *swagapi.GatewayAPI)
@@ -50,7 +48,7 @@ func (c *authHandlerImpl) Configure(registry *swagapi.GatewayAPI) {
 		func(params authapi.RegisterParams) middleware.Responder {
 			if params.Body == nil {
 				err := errors.New("Empty Body")
-				ex := e.NewBadRequestException(err)
+				ex := e.NewBadRequestException(err, "Failed to register. Invalid Request")
 				return authapi.NewLoginDefault(ex.StatusCode()).WithPayload(ex.ToSwaggerError())
 			}
 
@@ -74,7 +72,7 @@ func (c *authHandlerImpl) Configure(registry *swagapi.GatewayAPI) {
 		func(params authapi.LoginParams) middleware.Responder {
 			if params.Body == nil {
 				err := errors.New("Empty Body")
-				ex := e.NewBadRequestException(err)
+				ex := e.NewBadRequestException(err, "Failed to login.")
 				return authapi.NewLoginDefault(ex.StatusCode()).WithPayload(ex.ToSwaggerError())
 			}
 
@@ -126,17 +124,17 @@ func (c *authHandlerImpl) Register(uid string, email string, password string) (*
 		strings.TrimSpace(email) == "" ||
 		strings.TrimSpace(password) == "" {
 		err := errors.New("Empty uid or password")
-		return nil, e.NewBadRequestException(err)
+		return nil, e.NewBadRequestException(err, "Failed to register. Empty UID or Password")
 	}
 
 	encrypted, err := c.encryptor.Digest(password)
 	if err != nil {
-		wrap := errors.Wrap(err, "Failed to digest password")
-		return nil, e.NewInternalServerException(wrap)
+		return nil, e.NewInternalServerException(err, "Failed to register. Invalid Digest")
 	}
 
 	aid, ex := c.userRepository.CreateAuthIdentity(uid, email, encrypted)
 	if ex != nil {
+		ex.UpdateMessage("Failed to register. Can't create new account")
 		return nil, ex
 	}
 
@@ -146,17 +144,17 @@ func (c *authHandlerImpl) Register(uid string, email string, password string) (*
 func (c *authHandlerImpl) Login(uid string, password string) (*AuthClaim, e.Exception) {
 	if strings.TrimSpace(uid) == "" || strings.TrimSpace(password) == "" {
 		err := errors.New("Empty uid or password")
-		return nil, e.NewUnauthorizedException(err)
+		return nil, e.NewUnauthorizedException(err, "Failed to login. Invalid ID or Password")
 	}
 
 	aid, ex := c.userRepository.FindAuthIdentityByUID(uid)
 	if ex != nil {
+		ex.UpdateMessage("Failed to login. Invalid ID or Password")
 		return nil, ex
 	}
 
 	if err := c.encryptor.Compare(aid.EncryptedPassword, password); err != nil {
-		wrap := errors.Wrap(err, "Incorrect password")
-		return nil, e.NewUnauthorizedException(wrap)
+		return nil, e.NewBadRequestException(err, "Failed to login. Invalid ID or Password")
 	}
 
 	return aid.ToClaims(), nil
@@ -219,34 +217,4 @@ func (responder *LogoutSessionResponder) WriteResponse(w http.ResponseWriter, p 
 	r := responder.request
 	responder.session.Save(r, w)
 	responder.LogoutOK.WriteResponse(w, p)
-}
-
-func ConfigureSessionMiddleware(sessionStore sessions.Store, h http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// if CORS
-		if r.Method == http.MethodOptions && r.Header.Get("Access-Control-Request-Method") != "" {
-			h.ServeHTTP(w, r)
-			return
-		}
-
-		// if auth request
-		if r.Method == http.MethodPost && strings.HasPrefix(r.URL.Path, "/api/auth/") {
-			h.ServeHTTP(w, r)
-			return
-		}
-
-		session, _ := sessionStore.Get(r, SessionCookieName)
-		if authenticated, _ := IsAuthenticated(session); !authenticated {
-			message := fmt.Sprintf("Not Authenticated: (%s) %s", r.Method, r.URL.Path)
-			err := errors.New(message)
-			ex := e.NewUnauthorizedException(err)
-
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(ex.StatusCode())
-			json.NewEncoder(w).Encode(ex)
-			return
-		}
-
-		h.ServeHTTP(w, r)
-	})
 }

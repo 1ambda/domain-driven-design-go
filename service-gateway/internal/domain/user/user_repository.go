@@ -30,13 +30,12 @@ func (r *repositoryImpl) DeleteUser(id uint) (bool, e.Exception) {
 	result := r.db.Where("id = ?", id).Delete(record)
 
 	if result.Error != nil {
-		wrap := errors.Wrap(result.Error, "Failed to delete User")
-		return false, e.NewInternalServerException(wrap)
+		return false, e.NewInternalServerException(result.Error, "Failed to delete User")
 	}
 
 	if result.RowsAffected < 1 {
-		wrap := errors.Wrap(result.Error, "Failed to fine User to be deleted")
-		return false, e.NewNotFoundException(wrap)
+		err := errors.New("Failed to fine User to be deleted")
+		return false, e.NewNotFoundException(err, "Failed to find User which does not exist")
 	}
 
 	return true, nil
@@ -47,13 +46,11 @@ func (r *repositoryImpl) FindUserById(id uint) (*User, e.Exception) {
 	err := r.db.Where("id = ?", id).First(record).Error
 
 	if err != nil {
-		wrap := errors.Wrap(err, "Failed to find User")
-
 		if gorm.IsRecordNotFoundError(err) {
-			return nil, e.NewNotFoundException(wrap)
+			return nil, e.NewNotFoundException(err, "Failed to find User does not exist")
 		}
 
-		return nil, e.NewInternalServerException(wrap)
+		return nil, e.NewInternalServerException(err, "Failed to find User")
 	}
 
 	return record, nil
@@ -66,8 +63,7 @@ func (r *repositoryImpl) FineAllUsers() (*[]User, e.Exception) {
 
 	err := r.db.Find(&records).Error
 	if err != nil {
-		wrap := errors.Wrap(err, "Failed to find all User")
-		return nil, e.NewInternalServerException(wrap)
+		return nil, e.NewInternalServerException(err, "Failed to find all User")
 	}
 
 	return &records, nil
@@ -80,8 +76,7 @@ func (r *repositoryImpl) CreateAuthIdentity(uid string, email string, encryptedP
 	err := tx.Create(&user).Error
 	if err != nil {
 		tx.Rollback()
-		wrap := errors.Wrap(err, "Failed to create User")
-		return nil, e.NewInternalServerException(wrap)
+		return nil, e.NewInternalServerException(err, "Failed to create User")
 	}
 
 	authIdentity := &AuthIdentity{
@@ -95,8 +90,7 @@ func (r *repositoryImpl) CreateAuthIdentity(uid string, email string, encryptedP
 	err = tx.Create(authIdentity).Error
 	if err != nil {
 		tx.Rollback()
-		wrap := errors.Wrap(err, "Failed to create AuthIdentity")
-		return nil, e.NewInternalServerException(wrap)
+		return nil, e.NewInternalServerException(err, "Failed to create AuthIdentity")
 	}
 
 	tx.Commit()
@@ -108,13 +102,11 @@ func (r *repositoryImpl) FindAuthIdentityByUID(uid string) (*AuthIdentity, e.Exc
 	err := r.db.Where("uid = ?", uid).First(&aid).Error
 
 	if err != nil {
-		wrap := errors.Wrap(err, "Failed to find AuthIdentity with UID")
-
 		if gorm.IsRecordNotFoundError(err) {
-			return nil, e.NewUnauthorizedException(wrap)
+			return nil, e.NewBadRequestException(err, "Failed to find AuthIdentity doest not exist")
 		}
 
-		return nil, e.NewInternalServerException(wrap)
+		return nil, e.NewInternalServerException(err, "Failed to find AuthIdentity")
 	}
 
 	return &aid, nil
