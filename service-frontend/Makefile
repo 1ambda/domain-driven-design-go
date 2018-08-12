@@ -13,6 +13,10 @@ ENDPOINT_GATEWAY := $(or ${ENDPOINT_GATEWAY},${ENDPOINT_GATEWAY},http://localhos
 SWAGGER_CLIENT_DIR      = "./src/generated/swagger"
 SWAGGER_FILE       = "../schema-swagger/gateway-rest.yaml"
 
+GIT_COMMIT		= $(shell git rev-parse HEAD)
+GIT_DIRTY		= $(shell test -n "`git status --porcelain`" && echo "+CHANGES" || true)
+VERSION 		= $(shell cat ./VERSION)
+
 .PHONY: prepare
 prepare:
 	@ echo "[$(TAG)] ($(shell TZ=UTC date -u '+%H:%M:%S')) - Installing prerequisites"

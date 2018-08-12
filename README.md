@@ -19,3 +19,20 @@
     * Swagger Codegen for Server (Golang) 
     * Swagger Codegen for Client (Vue, TypeScript)
     * Automated CI / CD Pipeline (GCB -> GCR -> Spinnaker -> GKE) 
+    
+    
+## Running All Services 
+
+| name | version | description |
+|---|---|---|
+| [go](https://github.com/golang/go) | 1.10+ | use [gvm](https://github.com/moovweb/gvm) |
+| [nodejs](https://nodejs.org/) | 8.10.0+ | use [nvm](https://github.com/creationix/nvm) |
+
+```bash
+$ go get -g github.com/1ambda/domain-driven-design-go
+$ cd $GOPATH/src/github.com/1ambda/domain-driven-design-go 
+
+$ make compose.all
+
+# visit http://localhost:8080
+```
