@@ -12,7 +12,8 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/pkg/errors"
 	"net/http"
-	)
+	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/config"
+)
 
 type AuthHandler interface {
 	Configure(handlerRegistry *swagapi.GatewayAPI)
@@ -32,7 +33,8 @@ const SessionFieldUID = "uid"
 const SessionFieldAuthenticated = "authenticated"
 
 func NewSessionStore() sessions.Store {
-	return sessions.NewCookieStore([]byte(SessionSecret))
+	secret := config.Env.SessionSecret
+	return sessions.NewCookieStore([]byte(secret))
 }
 
 func NewAuthHandler(repo Repository, encryptor Encryptor, sessionStore sessions.Store) AuthHandler {

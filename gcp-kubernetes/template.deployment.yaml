@@ -110,6 +110,12 @@ spec:
               name: database
               key: DATABASE_PASSWORD
 
+        - name: SESSION_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: session
+              key: SESSION_SECRET
+
         # common env variables
         - name: NODE_NAME
           valueFrom:

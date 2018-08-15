@@ -36,6 +36,9 @@ type Environment struct {
 	MysqlPassword string `envconfig:"MYSQL_PASSWORD" default:"root"`
 	SchemaAssetDir string `envconfig:"SCHEMA_ASSET_DIR" default:"../../asset/sql"`
 
+	// session store
+	SessionSecret string `envconfig:"SESSION_SECRET" default:"something-very-secret"`
+
 	// server
 	CorsAllowURLs []string `envconfig:"GATEWAY_COR_URLS" default:"http://localhost:8080,http://127.0.0.1:8080,http://0.0.0.0:8080"`
 
