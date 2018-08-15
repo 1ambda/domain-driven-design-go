@@ -128,7 +128,8 @@ func (d *MySQLDatabase) Migrate(callback func(db *gorm.DB) ()) {
 	)
 
 	if err != nil {
-		failedMigr := migrations[appliedMigrationCount]
+		failedMigrStartIndex := appliedMigrationCount // including previous migration
+		failedMigr := migrations[failedMigrStartIndex]
 
 		logger.Warnw("Found sql migration error. Doing rollback...", "down", failedMigr.Down)
 		_, downErr := migrate.Exec(
