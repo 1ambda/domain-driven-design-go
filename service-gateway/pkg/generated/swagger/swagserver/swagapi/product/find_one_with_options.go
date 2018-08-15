@@ -7,8 +7,14 @@ package product
 
 import (
 	"net/http"
+	"strconv"
 
+	errors "github.com/go-openapi/errors"
 	middleware "github.com/go-openapi/runtime/middleware"
+	strfmt "github.com/go-openapi/strfmt"
+	swag "github.com/go-openapi/swag"
+
+	swagmodel "github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagmodel"
 )
 
 // FindOneWithOptionsHandlerFunc turns a function with the right signature into a find one with options handler
@@ -55,4 +61,94 @@ func (o *FindOneWithOptions) ServeHTTP(rw http.ResponseWriter, r *http.Request) 
 
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
+}
+
+// FindOneWithOptionsOKBody find one with options o k body
+// swagger:model FindOneWithOptionsOKBody
+type FindOneWithOptionsOKBody struct {
+
+	// options
+	Options []*swagmodel.ProductOption `json:"options"`
+
+	// product
+	Product *swagmodel.Product `json:"product,omitempty"`
+}
+
+// Validate validates this find one with options o k body
+func (o *FindOneWithOptionsOKBody) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateOptions(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateProduct(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *FindOneWithOptionsOKBody) validateOptions(formats strfmt.Registry) error {
+
+	if swag.IsZero(o.Options) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(o.Options); i++ {
+		if swag.IsZero(o.Options[i]) { // not required
+			continue
+		}
+
+		if o.Options[i] != nil {
+			if err := o.Options[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("findOneWithOptionsOK" + "." + "options" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (o *FindOneWithOptionsOKBody) validateProduct(formats strfmt.Registry) error {
+
+	if swag.IsZero(o.Product) { // not required
+		return nil
+	}
+
+	if o.Product != nil {
+		if err := o.Product.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("findOneWithOptionsOK" + "." + "product")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *FindOneWithOptionsOKBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *FindOneWithOptionsOKBody) UnmarshalBinary(b []byte) error {
+	var res FindOneWithOptionsOKBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
 }

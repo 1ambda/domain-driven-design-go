@@ -25,7 +25,7 @@ type FindOneWithOptionsOK struct {
 	/*
 	  In: Body
 	*/
-	Payload *swagmodel.FindOneWithOptionsOKBody `json:"body,omitempty"`
+	Payload *FindOneWithOptionsOKBody `json:"body,omitempty"`
 }
 
 // NewFindOneWithOptionsOK creates FindOneWithOptionsOK with default headers values
@@ -35,13 +35,13 @@ func NewFindOneWithOptionsOK() *FindOneWithOptionsOK {
 }
 
 // WithPayload adds the payload to the find one with options o k response
-func (o *FindOneWithOptionsOK) WithPayload(payload *swagmodel.FindOneWithOptionsOKBody) *FindOneWithOptionsOK {
+func (o *FindOneWithOptionsOK) WithPayload(payload *FindOneWithOptionsOKBody) *FindOneWithOptionsOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the find one with options o k response
-func (o *FindOneWithOptionsOK) SetPayload(payload *swagmodel.FindOneWithOptionsOKBody) {
+func (o *FindOneWithOptionsOK) SetPayload(payload *FindOneWithOptionsOKBody) {
 	o.Payload = payload
 }
 

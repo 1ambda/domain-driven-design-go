@@ -46,6 +46,9 @@ func init() {
     "/auth/whoami": {
       "$ref": "./gateway-auth.yaml#/api/whoami"
     },
+    "/cart": {
+      "$ref": "./gateway-cart.yaml#/api/getCartItems"
+    },
     "/product": {
       "$ref": "./gateway-product.yaml#/api/findAllProducts"
     },
@@ -186,6 +189,39 @@ func init() {
         }
       }
     },
+    "/cart": {
+      "get": {
+        "tags": [
+          "cart"
+        ],
+        "operationId": "getCartItems",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "cart": {
+                  "$ref": "#/definitions/cart"
+                },
+                "cartItemList": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/cartItem"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "error",
+            "schema": {
+              "$ref": "#/definitions/exception"
+            }
+          }
+        }
+      }
+    },
     "/product": {
       "get": {
         "tags": [
@@ -212,7 +248,18 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/findAllOKBody"
+              "type": "object",
+              "properties": {
+                "pagination": {
+                  "$ref": "#/definitions/pagination"
+                },
+                "rows": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/product"
+                  }
+                }
+              }
             }
           },
           "default": {
@@ -241,7 +288,18 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/findOneWithOptionsOKBody"
+              "type": "object",
+              "properties": {
+                "options": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/productOption"
+                  }
+                },
+                "product": {
+                  "$ref": "#/definitions/product"
+                }
+              }
             }
           },
           "default": {
@@ -259,6 +317,74 @@ func init() {
       "type": "object",
       "properties": {
         "uid": {
+          "type": "string"
+        }
+      }
+    },
+    "cart": {
+      "type": "object",
+      "required": [
+        "cartID",
+        "updatedAt",
+        "totalPrice",
+        "itemCount"
+      ],
+      "properties": {
+        "cartID": {
+          "type": "number",
+          "format": "int64"
+        },
+        "itemCount": {
+          "type": "string"
+        },
+        "totalPrice": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        }
+      }
+    },
+    "cartItem": {
+      "type": "object",
+      "required": [
+        "cartItemID",
+        "cartID",
+        "updatedAt",
+        "index",
+        "quantity",
+        "productPrice",
+        "totalPrice",
+        "productID"
+      ],
+      "properties": {
+        "cartID": {
+          "type": "number",
+          "format": "int64"
+        },
+        "cartItemID": {
+          "type": "number",
+          "format": "int64"
+        },
+        "index": {
+          "type": "number",
+          "format": "int64"
+        },
+        "productID": {
+          "type": "number",
+          "format": "int64"
+        },
+        "productPrice": {
+          "type": "string"
+        },
+        "quantity": {
+          "type": "number",
+          "format": "int64"
+        },
+        "totalPrice": {
+          "type": "string"
+        },
+        "updatedAt": {
           "type": "string"
         }
       }
@@ -290,36 +416,6 @@ func init() {
           ]
         }
       }
-    },
-    "findAllOKBody": {
-      "type": "object",
-      "properties": {
-        "pagination": {
-          "$ref": "#/definitions/pagination"
-        },
-        "rows": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/product"
-          }
-        }
-      },
-      "x-go-gen-location": "operations"
-    },
-    "findOneWithOptionsOKBody": {
-      "type": "object",
-      "properties": {
-        "options": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/productOption"
-          }
-        },
-        "product": {
-          "$ref": "#/definitions/product"
-        }
-      },
-      "x-go-gen-location": "operations"
     },
     "loginRequest": {
       "type": "object",

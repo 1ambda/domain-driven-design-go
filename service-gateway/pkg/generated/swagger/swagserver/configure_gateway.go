@@ -9,10 +9,10 @@ import (
 	errors "github.com/go-openapi/errors"
 	runtime "github.com/go-openapi/runtime"
 	middleware "github.com/go-openapi/runtime/middleware"
-	graceful "github.com/tylerb/graceful"
 
 	"github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagserver/swagapi"
 	"github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagserver/swagapi/auth"
+	"github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagserver/swagapi/cart"
 	"github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagserver/swagapi/product"
 )
 
@@ -54,6 +54,9 @@ func configureAPI(api *swagapi.GatewayAPI) http.Handler {
 	api.ProductFindOneWithOptionsHandler = product.FindOneWithOptionsHandlerFunc(func(params product.FindOneWithOptionsParams) middleware.Responder {
 		return middleware.NotImplemented("operation product.FindOneWithOptions has not yet been implemented")
 	})
+	api.CartGetCartItemsHandler = cart.GetCartItemsHandlerFunc(func(params cart.GetCartItemsParams) middleware.Responder {
+		return middleware.NotImplemented("operation cart.GetCartItems has not yet been implemented")
+	})
 
 	api.ServerShutdown = func() {}
 
@@ -69,7 +72,7 @@ func configureTLS(tlsConfig *tls.Config) {
 // If you need to modify a config, store server instance to stop it individually later, this is the place.
 // This function can be called multiple times, depending on the number of serving schemes.
 // scheme value will be set accordingly: "http", "https" or "unix"
-func configureServer(s *graceful.Server, scheme, addr string) {
+func configureServer(s *http.Server, scheme, addr string) {
 }
 
 // The middleware configuration is for the handler executors. These do not apply to the swagger.json document.

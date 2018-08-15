@@ -82,6 +82,7 @@ func (o *FindAllParams) BindRequest(r *http.Request, route *middleware.MatchedRo
 	return nil
 }
 
+// bindCurrentPageOffset binds and validates parameter CurrentPageOffset from query.
 func (o *FindAllParams) bindCurrentPageOffset(rawData []string, hasKey bool, formats strfmt.Registry) error {
 	var raw string
 	if len(rawData) > 0 {
@@ -104,6 +105,7 @@ func (o *FindAllParams) bindCurrentPageOffset(rawData []string, hasKey bool, for
 	return nil
 }
 
+// bindItemCountPerPage binds and validates parameter ItemCountPerPage from query.
 func (o *FindAllParams) bindItemCountPerPage(rawData []string, hasKey bool, formats strfmt.Registry) error {
 	var raw string
 	if len(rawData) > 0 {

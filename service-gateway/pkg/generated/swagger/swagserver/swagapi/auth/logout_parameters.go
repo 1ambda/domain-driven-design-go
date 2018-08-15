@@ -52,7 +52,6 @@ func (o *LogoutParams) BindRequest(r *http.Request, route *middleware.MatchedRou
 		if err := route.Consumer.Consume(r.Body, &body); err != nil {
 			res = append(res, errors.NewParseError("body", "body", "", err))
 		} else {
-
 			// no validation on generic interface
 			o.Body = body
 		}

@@ -20,6 +20,7 @@ import (
 	"github.com/go-openapi/swag"
 
 	"github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagserver/swagapi/auth"
+	"github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagserver/swagapi/cart"
 	"github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagserver/swagapi/product"
 )
 
@@ -57,6 +58,9 @@ func NewGatewayAPI(spec *loads.Document) *GatewayAPI {
 		}),
 		ProductFindOneWithOptionsHandler: product.FindOneWithOptionsHandlerFunc(func(params product.FindOneWithOptionsParams) middleware.Responder {
 			return middleware.NotImplemented("operation ProductFindOneWithOptions has not yet been implemented")
+		}),
+		CartGetCartItemsHandler: cart.GetCartItemsHandlerFunc(func(params cart.GetCartItemsParams) middleware.Responder {
+			return middleware.NotImplemented("operation CartGetCartItems has not yet been implemented")
 		}),
 	}
 }
@@ -101,6 +105,8 @@ type GatewayAPI struct {
 	ProductFindAllHandler product.FindAllHandler
 	// ProductFindOneWithOptionsHandler sets the operation handler for the find one with options operation
 	ProductFindOneWithOptionsHandler product.FindOneWithOptionsHandler
+	// CartGetCartItemsHandler sets the operation handler for the get cart items operation
+	CartGetCartItemsHandler cart.GetCartItemsHandler
 
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
@@ -186,6 +192,10 @@ func (o *GatewayAPI) Validate() error {
 
 	if o.ProductFindOneWithOptionsHandler == nil {
 		unregistered = append(unregistered, "product.FindOneWithOptionsHandler")
+	}
+
+	if o.CartGetCartItemsHandler == nil {
+		unregistered = append(unregistered, "cart.GetCartItemsHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -315,6 +325,11 @@ func (o *GatewayAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/product/{productID}"] = product.NewFindOneWithOptions(o.context, o.ProductFindOneWithOptionsHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/cart"] = cart.NewGetCartItems(o.context, o.CartGetCartItemsHandler)
 
 }
 
