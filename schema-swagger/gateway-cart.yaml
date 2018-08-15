@@ -1,0 +1,101 @@
+api:
+  getCartItems:
+    get:
+      tags:
+      - cart
+      operationId: getCartItems
+      parameters:
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              cart:
+                $ref: "./gateway-cart.yaml#/definitions/Cart"
+              cartItemList:
+                type: array
+                items:
+                  $ref: "./gateway-cart.yaml#/definitions/CartItem"
+        default:
+          description: error
+          schema:
+            $ref: "./common.yaml#/definitions/Exception"
+
+definitions:
+  Cart:
+    type: object
+    required:
+    - cartID
+    - updatedAt
+    - totalPrice
+    - itemCount
+    properties:
+      cartID:
+        type: number
+        format: int64
+      updatedAt:
+        type: string
+      totalPrice:
+        type: string
+      itemCount:
+        type: string
+
+  CartItem:
+    type: object
+    required:
+    - cartItemID
+    - cartID
+    - updatedAt
+    - index
+    - quantity
+    - productPrice
+    - totalPrice
+    - productID
+    properties:
+      cartItemID:
+        type: number
+        format: int64
+      cartID:
+        type: number
+        format: int64
+      updatedAt:
+        type: string
+      index:
+        type: number
+        format: int64
+      quantity:
+        type: number
+        format: int64
+      productPrice:
+        type: string
+      totalPrice:
+        type: string
+      productID:
+        type: number
+        format: int64
+
+  CartItemOption:
+    required:
+    - cartItemOptionID
+    - cartItemID
+    - updatedAt
+    - quantity
+    - required
+    type: object
+    properties:
+      cartItemOptionID:
+        type: number
+        format: int64
+      cartItemID:
+        type: number
+        format: int64
+        required: true
+      updatedAt:
+        type: string
+        required: true
+      quantity:
+        type: number
+        format: int64
+      productOptionPrice:
+        type: string

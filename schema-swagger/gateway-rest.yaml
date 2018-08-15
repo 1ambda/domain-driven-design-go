@@ -29,3 +29,6 @@ paths:
 
   /product/{productID}:
     $ref: "./gateway-product.yaml#/api/findOneProductWithOptions"
+
+  /cart:
+    $ref: "./gateway-cart.yaml#/api/getCartItems"
