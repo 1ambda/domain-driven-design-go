@@ -1,8 +1,8 @@
-TAG 		= "Makefile"
+TAG		= "Makefile"
 
-DOCKER 		= docker
-MYSQLCLIENT = mycli
-PIP 		= pip
+DOCKER		= docker
+MYSQLCLIENT	= mycli
+PIP			= pip
 
 VCS				= github.com
 REPOSITORY		= 1ambda/domain-driven-design-go
