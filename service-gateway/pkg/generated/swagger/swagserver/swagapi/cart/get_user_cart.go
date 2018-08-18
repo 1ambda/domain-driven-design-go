@@ -17,40 +17,40 @@ import (
 	swagmodel "github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagmodel"
 )
 
-// GetCartItemsHandlerFunc turns a function with the right signature into a get cart items handler
-type GetCartItemsHandlerFunc func(GetCartItemsParams) middleware.Responder
+// GetUserCartHandlerFunc turns a function with the right signature into a get user cart handler
+type GetUserCartHandlerFunc func(GetUserCartParams) middleware.Responder
 
 // Handle executing the request and returning a response
-func (fn GetCartItemsHandlerFunc) Handle(params GetCartItemsParams) middleware.Responder {
+func (fn GetUserCartHandlerFunc) Handle(params GetUserCartParams) middleware.Responder {
 	return fn(params)
 }
 
-// GetCartItemsHandler interface for that can handle valid get cart items params
-type GetCartItemsHandler interface {
-	Handle(GetCartItemsParams) middleware.Responder
+// GetUserCartHandler interface for that can handle valid get user cart params
+type GetUserCartHandler interface {
+	Handle(GetUserCartParams) middleware.Responder
 }
 
-// NewGetCartItems creates a new http.Handler for the get cart items operation
-func NewGetCartItems(ctx *middleware.Context, handler GetCartItemsHandler) *GetCartItems {
-	return &GetCartItems{Context: ctx, Handler: handler}
+// NewGetUserCart creates a new http.Handler for the get user cart operation
+func NewGetUserCart(ctx *middleware.Context, handler GetUserCartHandler) *GetUserCart {
+	return &GetUserCart{Context: ctx, Handler: handler}
 }
 
-/*GetCartItems swagger:route GET /cart cart getCartItems
+/*GetUserCart swagger:route GET /cart cart getUserCart
 
-GetCartItems get cart items API
+GetUserCart get user cart API
 
 */
-type GetCartItems struct {
+type GetUserCart struct {
 	Context *middleware.Context
-	Handler GetCartItemsHandler
+	Handler GetUserCartHandler
 }
 
-func (o *GetCartItems) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
+func (o *GetUserCart) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
 		r = rCtx
 	}
-	var Params = NewGetCartItemsParams()
+	var Params = NewGetUserCartParams()
 
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
@@ -63,9 +63,9 @@ func (o *GetCartItems) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 }
 
-// GetCartItemsOKBody get cart items o k body
-// swagger:model GetCartItemsOKBody
-type GetCartItemsOKBody struct {
+// GetUserCartOKBody get user cart o k body
+// swagger:model GetUserCartOKBody
+type GetUserCartOKBody struct {
 
 	// cart
 	Cart *swagmodel.Cart `json:"cart,omitempty"`
@@ -74,8 +74,8 @@ type GetCartItemsOKBody struct {
 	CartItemList []*swagmodel.CartItem `json:"cartItemList"`
 }
 
-// Validate validates this get cart items o k body
-func (o *GetCartItemsOKBody) Validate(formats strfmt.Registry) error {
+// Validate validates this get user cart o k body
+func (o *GetUserCartOKBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := o.validateCart(formats); err != nil {
@@ -92,7 +92,7 @@ func (o *GetCartItemsOKBody) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (o *GetCartItemsOKBody) validateCart(formats strfmt.Registry) error {
+func (o *GetUserCartOKBody) validateCart(formats strfmt.Registry) error {
 
 	if swag.IsZero(o.Cart) { // not required
 		return nil
@@ -101,7 +101,7 @@ func (o *GetCartItemsOKBody) validateCart(formats strfmt.Registry) error {
 	if o.Cart != nil {
 		if err := o.Cart.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("getCartItemsOK" + "." + "cart")
+				return ve.ValidateName("getUserCartOK" + "." + "cart")
 			}
 			return err
 		}
@@ -110,7 +110,7 @@ func (o *GetCartItemsOKBody) validateCart(formats strfmt.Registry) error {
 	return nil
 }
 
-func (o *GetCartItemsOKBody) validateCartItemList(formats strfmt.Registry) error {
+func (o *GetUserCartOKBody) validateCartItemList(formats strfmt.Registry) error {
 
 	if swag.IsZero(o.CartItemList) { // not required
 		return nil
@@ -124,7 +124,7 @@ func (o *GetCartItemsOKBody) validateCartItemList(formats strfmt.Registry) error
 		if o.CartItemList[i] != nil {
 			if err := o.CartItemList[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
-					return ve.ValidateName("getCartItemsOK" + "." + "cartItemList" + "." + strconv.Itoa(i))
+					return ve.ValidateName("getUserCartOK" + "." + "cartItemList" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -136,7 +136,7 @@ func (o *GetCartItemsOKBody) validateCartItemList(formats strfmt.Registry) error
 }
 
 // MarshalBinary interface implementation
-func (o *GetCartItemsOKBody) MarshalBinary() ([]byte, error) {
+func (o *GetUserCartOKBody) MarshalBinary() ([]byte, error) {
 	if o == nil {
 		return nil, nil
 	}
@@ -144,8 +144,8 @@ func (o *GetCartItemsOKBody) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (o *GetCartItemsOKBody) UnmarshalBinary(b []byte) error {
-	var res GetCartItemsOKBody
+func (o *GetUserCartOKBody) UnmarshalBinary(b []byte) error {
+	var res GetUserCartOKBody
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

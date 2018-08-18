@@ -54,8 +54,8 @@ func configureAPI(api *swagapi.GatewayAPI) http.Handler {
 	api.ProductFindOneWithOptionsHandler = product.FindOneWithOptionsHandlerFunc(func(params product.FindOneWithOptionsParams) middleware.Responder {
 		return middleware.NotImplemented("operation product.FindOneWithOptions has not yet been implemented")
 	})
-	api.CartGetCartItemsHandler = cart.GetCartItemsHandlerFunc(func(params cart.GetCartItemsParams) middleware.Responder {
-		return middleware.NotImplemented("operation cart.GetCartItems has not yet been implemented")
+	api.CartGetUserCartHandler = cart.GetUserCartHandlerFunc(func(params cart.GetUserCartParams) middleware.Responder {
+		return middleware.NotImplemented("operation cart.GetUserCart has not yet been implemented")
 	})
 
 	api.ServerShutdown = func() {}

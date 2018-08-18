@@ -59,8 +59,8 @@ func NewGatewayAPI(spec *loads.Document) *GatewayAPI {
 		ProductFindOneWithOptionsHandler: product.FindOneWithOptionsHandlerFunc(func(params product.FindOneWithOptionsParams) middleware.Responder {
 			return middleware.NotImplemented("operation ProductFindOneWithOptions has not yet been implemented")
 		}),
-		CartGetCartItemsHandler: cart.GetCartItemsHandlerFunc(func(params cart.GetCartItemsParams) middleware.Responder {
-			return middleware.NotImplemented("operation CartGetCartItems has not yet been implemented")
+		CartGetUserCartHandler: cart.GetUserCartHandlerFunc(func(params cart.GetUserCartParams) middleware.Responder {
+			return middleware.NotImplemented("operation CartGetUserCart has not yet been implemented")
 		}),
 	}
 }
@@ -105,8 +105,8 @@ type GatewayAPI struct {
 	ProductFindAllHandler product.FindAllHandler
 	// ProductFindOneWithOptionsHandler sets the operation handler for the find one with options operation
 	ProductFindOneWithOptionsHandler product.FindOneWithOptionsHandler
-	// CartGetCartItemsHandler sets the operation handler for the get cart items operation
-	CartGetCartItemsHandler cart.GetCartItemsHandler
+	// CartGetUserCartHandler sets the operation handler for the get user cart operation
+	CartGetUserCartHandler cart.GetUserCartHandler
 
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
@@ -194,8 +194,8 @@ func (o *GatewayAPI) Validate() error {
 		unregistered = append(unregistered, "product.FindOneWithOptionsHandler")
 	}
 
-	if o.CartGetCartItemsHandler == nil {
-		unregistered = append(unregistered, "cart.GetCartItemsHandler")
+	if o.CartGetUserCartHandler == nil {
+		unregistered = append(unregistered, "cart.GetUserCartHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -329,7 +329,7 @@ func (o *GatewayAPI) initHandlerCache() {
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/cart"] = cart.NewGetCartItems(o.context, o.CartGetCartItemsHandler)
+	o.handlers["GET"]["/cart"] = cart.NewGetUserCart(o.context, o.CartGetUserCartHandler)
 
 }
 

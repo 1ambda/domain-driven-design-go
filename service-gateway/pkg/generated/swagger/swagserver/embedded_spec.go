@@ -194,7 +194,7 @@ func init() {
         "tags": [
           "cart"
         ],
-        "operationId": "getCartItems",
+        "operationId": "getUserCart",
         "responses": {
           "200": {
             "description": "OK",

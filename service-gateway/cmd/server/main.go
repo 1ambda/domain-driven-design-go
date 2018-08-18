@@ -15,6 +15,7 @@ import (
 		"github.com/1ambda/domain-driven-design-go/service-gateway/internal/rest"
 	"github.com/rs/cors"
 	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/test"
+	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain/cart"
 )
 
 func main() {
@@ -31,8 +32,6 @@ func main() {
 		"service_port", env.RestPort,
 		"mode", env.Mode,
 	)
-
-	logger.Debug("asdasd")
 
 	swaggerSpec, err := loads.Analyzed(swagserver.FlatSwaggerJSON, "")
 	if err != nil {
@@ -78,7 +77,11 @@ func main() {
 
 	userRepo := user.NewRepository(db)
 	productRepo := product.NewRepository(db)
+	cartRepo := cart.NewRepository(db)
 	encryptor := user.NewEncryptor(0)
+
+	cartHandler := cart.NewCartHandler(sessionStore, db, cartRepo, userRepo, productRepo)
+	cartHandler.Configure(api)
 
 	authHandler := user.NewAuthHandler(userRepo, encryptor, sessionStore)
 	authHandler.Configure(api)

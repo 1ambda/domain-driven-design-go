@@ -20,7 +20,7 @@ type Exception interface {
 	Timestamp() *time.Time
 	ToSwaggerError() *dto.Exception
 	Error() string
-	UpdateMessage(message string) string
+	Wrap(message string) string
 
 	IsBadRequestException() bool
 	IsUnauthorizedException() bool
@@ -29,35 +29,35 @@ type Exception interface {
 	IsInternalServerException() bool
 }
 
-type Failure struct {
+type failure struct {
 	cause      error
 	statusCode int
 	timestamp  time.Time
 }
 
-func (a *Failure) UpdateMessage(message string) string {
+func (a *failure) Wrap(message string) string {
 	wrap := errors.Wrap(a.cause, message)
 	a.cause = wrap
 	return wrap.Error()
 }
 
-func (a *Failure) Error() string {
+func (a *failure) Error() string {
 	return a.cause.Error()
 }
 
-func (a *Failure) Cause() error {
+func (a *failure) Cause() error {
 	return a.cause
 }
 
-func (a *Failure) StatusCode() int {
+func (a *failure) StatusCode() int {
 	return a.statusCode
 }
 
-func (a *Failure) Timestamp() *time.Time {
+func (a *failure) Timestamp() *time.Time {
 	return &a.timestamp
 }
 
-func (a *Failure) ToSwaggerError() *dto.Exception {
+func (a *failure) ToSwaggerError() *dto.Exception {
 	errorType := ""
 
 	message := strings.Split(a.cause.Error(), ":")[0]
@@ -88,70 +88,70 @@ func (a *Failure) ToSwaggerError() *dto.Exception {
 	}
 }
 
-func (a *Failure) IsBadRequestException() bool {
+func (a *failure) IsBadRequestException() bool {
 	return a.statusCode == CodeBadRequest
 }
 
 func NewBadRequestException(err error, message string) Exception {
 	wrap := errors.Wrap(err, message)
 
-	return &Failure{
+	return &failure{
 		cause:      wrap,
 		statusCode: CodeBadRequest,
 		timestamp:  time.Now(),
 	}
 }
 
-func (a *Failure) IsUnauthorizedException() bool {
+func (a *failure) IsUnauthorizedException() bool {
 	return a.statusCode == CodeUnauthorized
 }
 
 func NewUnauthorizedException(err error, message string) Exception {
 	wrap := errors.Wrap(err, message)
 
-	return &Failure{
+	return &failure{
 		cause:      wrap,
 		statusCode: CodeUnauthorized,
 		timestamp:  time.Now(),
 	}
 }
 
-func (a *Failure) IsForbiddenException() bool {
+func (a *failure) IsForbiddenException() bool {
 	return a.statusCode == CodeForbidden
 }
 
 func NewForbiddenException(err error, message string) Exception {
 	wrap := errors.Wrap(err, message)
 
-	return &Failure{
+	return &failure{
 		cause:      wrap,
 		statusCode: CodeForbidden,
 		timestamp:  time.Now(),
 	}
 }
 
-func (a *Failure) IsNotFoundException() bool {
+func (a *failure) IsNotFoundException() bool {
 	return a.statusCode == CodeNotFound
 }
 
 func NewNotFoundException(err error, message string) Exception {
 	wrap := errors.Wrap(err, message)
 
-	return &Failure{
+	return &failure{
 		cause:      wrap,
 		statusCode: CodeNotFound,
 		timestamp:  time.Now(),
 	}
 }
 
-func (a *Failure) IsInternalServerException() bool {
+func (a *failure) IsInternalServerException() bool {
 	return a.statusCode == CodeInternalServer
 }
 
 func NewInternalServerException(err error, message string) Exception {
 	wrap := errors.Wrap(err, message)
 
-	return &Failure{
+	return &failure{
 		cause:      wrap,
 		statusCode: CodeInternalServer,
 		timestamp:  time.Now(),

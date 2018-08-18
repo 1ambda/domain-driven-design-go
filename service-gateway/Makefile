@@ -90,7 +90,7 @@ swagger.version:
 	@ echo ""
 
 .PHONY: swagger.server
-swagger-server: swagger.version
+swagger.server: swagger.version
 	@ echo "[$(TAG)] ($(shell TZ=UTC date -u '+%H:%M:%S')) - Cleaning swagger files"
 	@ rm -rf pkg/generated/swagger/* || true
 	@ mkdir -p pkg/generated/swagger || true

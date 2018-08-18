@@ -3,7 +3,7 @@ api:
     get:
       tags:
       - cart
-      operationId: getCartItems
+      operationId: getUserCart
       parameters:
       responses:
         200:

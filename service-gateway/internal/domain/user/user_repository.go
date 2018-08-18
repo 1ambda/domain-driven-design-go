@@ -9,6 +9,7 @@ import (
 type Repository interface {
 	DeleteUser(id uint) (bool, e.Exception)
 	FindUserById(id uint) (*User, e.Exception)
+	FindUserByIdWithTx(tx *gorm.DB, id uint) (*User, e.Exception)
 	FineAllUsers() (*[]User, e.Exception)
 
 	CreateAuthIdentity(uid string, email string, password string) (*AuthIdentity, e.Exception)
@@ -41,9 +42,9 @@ func (r *repositoryImpl) DeleteUser(id uint) (bool, e.Exception) {
 	return true, nil
 }
 
-func (r *repositoryImpl) FindUserById(id uint) (*User, e.Exception) {
+func (r *repositoryImpl) FindUserByIdWithTx(tx *gorm.DB, id uint) (*User, e.Exception) {
 	record := &User{}
-	err := r.db.Where("id = ?", id).First(record).Error
+	err := tx.Where("id = ?", id).First(record).Error
 
 	if err != nil {
 		if gorm.IsRecordNotFoundError(err) {
@@ -51,6 +52,27 @@ func (r *repositoryImpl) FindUserById(id uint) (*User, e.Exception) {
 		}
 
 		return nil, e.NewInternalServerException(err, "Failed to find User")
+	}
+
+	return record, nil
+}
+
+func (r *repositoryImpl) FindUserById(id uint) (*User, e.Exception) {
+	tx := r.db.Begin()
+	if tx.Error != nil {
+		ex := e.NewInternalServerException(tx.Error, "Failed to get transaction")
+		return nil, ex
+	}
+
+	record, ex := r.FindUserByIdWithTx(tx, id)
+	if ex != nil {
+		return nil, ex
+	}
+
+	tx.Commit()
+	if tx.Error != nil {
+		ex := e.NewInternalServerException(tx.Error, "Failed to commit transaction")
+		return nil, ex
 	}
 
 	return record, nil
@@ -107,6 +129,18 @@ func (r *repositoryImpl) FindAuthIdentityByUID(uid string) (*AuthIdentity, e.Exc
 		}
 
 		return nil, e.NewInternalServerException(err, "Failed to find AuthIdentity")
+	}
+
+	user := User{}
+	aid.User = user
+
+	err = r.db.Model(&aid).Related(&aid.User).Error
+	if err != nil {
+		if gorm.IsRecordNotFoundError(err) {
+			return nil, e.NewBadRequestException(err, "Failed to find User by AuthIdentity which does not exist")
+		}
+
+		return nil, e.NewInternalServerException(err, "Failed to find User by AuthIdentity")
 	}
 
 	return &aid, nil

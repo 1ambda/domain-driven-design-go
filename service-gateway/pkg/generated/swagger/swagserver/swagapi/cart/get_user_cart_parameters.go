@@ -12,18 +12,18 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 )
 
-// NewGetCartItemsParams creates a new GetCartItemsParams object
+// NewGetUserCartParams creates a new GetUserCartParams object
 // no default values defined in spec.
-func NewGetCartItemsParams() GetCartItemsParams {
+func NewGetUserCartParams() GetUserCartParams {
 
-	return GetCartItemsParams{}
+	return GetUserCartParams{}
 }
 
-// GetCartItemsParams contains all the bound params for the get cart items operation
+// GetUserCartParams contains all the bound params for the get user cart operation
 // typically these are obtained from a http.Request
 //
-// swagger:parameters getCartItems
-type GetCartItemsParams struct {
+// swagger:parameters getUserCart
+type GetUserCartParams struct {
 
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
@@ -32,8 +32,8 @@ type GetCartItemsParams struct {
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
 // for simple values it will use straight method calls.
 //
-// To ensure default values, the struct must have been initialized with NewGetCartItemsParams() beforehand.
-func (o *GetCartItemsParams) BindRequest(r *http.Request, route *middleware.MatchedRoute) error {
+// To ensure default values, the struct must have been initialized with NewGetUserCartParams() beforehand.
+func (o *GetUserCartParams) BindRequest(r *http.Request, route *middleware.MatchedRoute) error {
 	var res []error
 
 	o.HTTPRequest = r

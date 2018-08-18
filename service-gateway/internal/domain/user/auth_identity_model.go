@@ -15,7 +15,7 @@ type AuthIdentity struct {
 	EncryptedPassword string `gorm:"column:encrypted_password; type:TEXT; NOT NULL;"`
 
 	User   User `gorm:"foreignkey:UserID;"`
-	UserID uint `gorm:"column:user_id" sql:"type:UNSIGNED BIG INT REFERENCES User(id) ON DELETE RESTRICT ON UPDATE CASCADE"`
+	UserID uint `gorm:"olumn:user_id" sql:"type:UNSIGNED BIG INT REFERENCES User(id) ON DELETE RESTRICT ON UPDATE CASCADE"`
 }
 
 func (AuthIdentity) TableName() string {
