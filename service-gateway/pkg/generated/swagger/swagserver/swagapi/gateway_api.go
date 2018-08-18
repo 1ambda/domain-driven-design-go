@@ -53,6 +53,9 @@ func NewGatewayAPI(spec *loads.Document) *GatewayAPI {
 		AuthWhoamiHandler: auth.WhoamiHandlerFunc(func(params auth.WhoamiParams) middleware.Responder {
 			return middleware.NotImplemented("operation AuthWhoami has not yet been implemented")
 		}),
+		CartAddCartItemHandler: cart.AddCartItemHandlerFunc(func(params cart.AddCartItemParams) middleware.Responder {
+			return middleware.NotImplemented("operation CartAddCartItem has not yet been implemented")
+		}),
 		ProductFindAllHandler: product.FindAllHandlerFunc(func(params product.FindAllParams) middleware.Responder {
 			return middleware.NotImplemented("operation ProductFindAll has not yet been implemented")
 		}),
@@ -101,6 +104,8 @@ type GatewayAPI struct {
 	AuthRegisterHandler auth.RegisterHandler
 	// AuthWhoamiHandler sets the operation handler for the whoami operation
 	AuthWhoamiHandler auth.WhoamiHandler
+	// CartAddCartItemHandler sets the operation handler for the add cart item operation
+	CartAddCartItemHandler cart.AddCartItemHandler
 	// ProductFindAllHandler sets the operation handler for the find all operation
 	ProductFindAllHandler product.FindAllHandler
 	// ProductFindOneWithOptionsHandler sets the operation handler for the find one with options operation
@@ -184,6 +189,10 @@ func (o *GatewayAPI) Validate() error {
 
 	if o.AuthWhoamiHandler == nil {
 		unregistered = append(unregistered, "auth.WhoamiHandler")
+	}
+
+	if o.CartAddCartItemHandler == nil {
+		unregistered = append(unregistered, "cart.AddCartItemHandler")
 	}
 
 	if o.ProductFindAllHandler == nil {
@@ -315,6 +324,11 @@ func (o *GatewayAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/auth/whoami"] = auth.NewWhoami(o.context, o.AuthWhoamiHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/cart"] = cart.NewAddCartItem(o.context, o.CartAddCartItemHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)

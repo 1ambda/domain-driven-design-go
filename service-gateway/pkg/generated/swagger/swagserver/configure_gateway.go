@@ -48,6 +48,9 @@ func configureAPI(api *swagapi.GatewayAPI) http.Handler {
 	api.AuthWhoamiHandler = auth.WhoamiHandlerFunc(func(params auth.WhoamiParams) middleware.Responder {
 		return middleware.NotImplemented("operation auth.Whoami has not yet been implemented")
 	})
+	api.CartAddCartItemHandler = cart.AddCartItemHandlerFunc(func(params cart.AddCartItemParams) middleware.Responder {
+		return middleware.NotImplemented("operation cart.AddCartItem has not yet been implemented")
+	})
 	api.ProductFindAllHandler = product.FindAllHandlerFunc(func(params product.FindAllParams) middleware.Responder {
 		return middleware.NotImplemented("operation product.FindAll has not yet been implemented")
 	})

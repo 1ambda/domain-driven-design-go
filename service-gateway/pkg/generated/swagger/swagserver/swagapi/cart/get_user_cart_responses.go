@@ -25,7 +25,7 @@ type GetUserCartOK struct {
 	/*
 	  In: Body
 	*/
-	Payload *GetUserCartOKBody `json:"body,omitempty"`
+	Payload *swagmodel.GetUserCartOKBody `json:"body,omitempty"`
 }
 
 // NewGetUserCartOK creates GetUserCartOK with default headers values
@@ -35,13 +35,13 @@ func NewGetUserCartOK() *GetUserCartOK {
 }
 
 // WithPayload adds the payload to the get user cart o k response
-func (o *GetUserCartOK) WithPayload(payload *GetUserCartOKBody) *GetUserCartOK {
+func (o *GetUserCartOK) WithPayload(payload *swagmodel.GetUserCartOKBody) *GetUserCartOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the get user cart o k response
-func (o *GetUserCartOK) SetPayload(payload *GetUserCartOKBody) {
+func (o *GetUserCartOK) SetPayload(payload *swagmodel.GetUserCartOKBody) {
 	o.Payload = payload
 }
 

@@ -199,17 +199,29 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "type": "object",
-              "properties": {
-                "cart": {
-                  "$ref": "#/definitions/cart"
-                },
-                "cartItemList": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/cartItem"
-                  }
-                }
+              "$ref": "#/definitions/getUserCartOKBody"
+            }
+          },
+          "default": {
+            "description": "error",
+            "schema": {
+              "$ref": "#/definitions/exception"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "cart"
+        ],
+        "operationId": "addCartItem",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/addCartItemOKBodyItems"
               }
             }
           },
@@ -248,18 +260,7 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "type": "object",
-              "properties": {
-                "pagination": {
-                  "$ref": "#/definitions/pagination"
-                },
-                "rows": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/product"
-                  }
-                }
-              }
+              "$ref": "#/definitions/findAllOKBody"
             }
           },
           "default": {
@@ -288,18 +289,7 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "type": "object",
-              "properties": {
-                "options": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/productOption"
-                  }
-                },
-                "product": {
-                  "$ref": "#/definitions/product"
-                }
-              }
+              "$ref": "#/definitions/findOneWithOptionsOKBody"
             }
           },
           "default": {
@@ -313,6 +303,17 @@ func init() {
     }
   },
   "definitions": {
+    "addCartItemOKBodyItems": {
+      "properties": {
+        "item": {
+          "$ref": "#/definitions/cartItem"
+        },
+        "option": {
+          "$ref": "#/definitions/cartItemOption"
+        }
+      },
+      "x-go-gen-location": "operations"
+    },
     "authResponse": {
       "type": "object",
       "properties": {
@@ -389,6 +390,36 @@ func init() {
         }
       }
     },
+    "cartItemOption": {
+      "type": "object",
+      "required": [
+        "cartItemOptionID",
+        "cartItemID",
+        "updatedAt",
+        "quantity",
+        "required"
+      ],
+      "properties": {
+        "cartItemID": {
+          "type": "number",
+          "format": "int64"
+        },
+        "cartItemOptionID": {
+          "type": "number",
+          "format": "int64"
+        },
+        "productOptionPrice": {
+          "type": "string"
+        },
+        "quantity": {
+          "type": "number",
+          "format": "int64"
+        },
+        "updatedAt": {
+          "type": "string"
+        }
+      }
+    },
     "empty": {
       "type": "object"
     },
@@ -416,6 +447,51 @@ func init() {
           ]
         }
       }
+    },
+    "findAllOKBody": {
+      "type": "object",
+      "properties": {
+        "pagination": {
+          "$ref": "#/definitions/pagination"
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/product"
+          }
+        }
+      },
+      "x-go-gen-location": "operations"
+    },
+    "findOneWithOptionsOKBody": {
+      "type": "object",
+      "properties": {
+        "options": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/productOption"
+          }
+        },
+        "product": {
+          "$ref": "#/definitions/product"
+        }
+      },
+      "x-go-gen-location": "operations"
+    },
+    "getUserCartOKBody": {
+      "type": "object",
+      "properties": {
+        "cart": {
+          "$ref": "#/definitions/cart"
+        },
+        "cartItemList": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/cartItem"
+          }
+        }
+      },
+      "x-go-gen-location": "operations"
     },
     "loginRequest": {
       "type": "object",

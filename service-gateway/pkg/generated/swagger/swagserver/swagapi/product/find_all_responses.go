@@ -25,7 +25,7 @@ type FindAllOK struct {
 	/*
 	  In: Body
 	*/
-	Payload *FindAllOKBody `json:"body,omitempty"`
+	Payload *swagmodel.FindAllOKBody `json:"body,omitempty"`
 }
 
 // NewFindAllOK creates FindAllOK with default headers values
@@ -35,13 +35,13 @@ func NewFindAllOK() *FindAllOK {
 }
 
 // WithPayload adds the payload to the find all o k response
-func (o *FindAllOK) WithPayload(payload *FindAllOKBody) *FindAllOK {
+func (o *FindAllOK) WithPayload(payload *swagmodel.FindAllOKBody) *FindAllOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the find all o k response
-func (o *FindAllOK) SetPayload(payload *FindAllOKBody) {
+func (o *FindAllOK) SetPayload(payload *swagmodel.FindAllOKBody) {
 	o.Payload = payload
 }
 

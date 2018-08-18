@@ -125,11 +125,10 @@
   version = "0.15.0"
 
 [[projects]]
-  digest = "1:c5d674857728a31a6c91b67d4ef755b2301f5caa2b58e98f7a2684b1f950b449"
+  digest = "1:3036f82de4db45088a195cc528b6129b11efaeb34ab0566c17c941d78594cb7c"
   name = "github.com/go-openapi/runtime"
   packages = [
     ".",
-    "flagext",
     "logger",
     "middleware",
     "middleware/denco",
@@ -142,12 +141,12 @@
   version = "0.15.0"
 
 [[projects]]
-  digest = "1:cbd9c1cc4ce36075f4ebf0e0525e6cda8597daac1a5eb5f7f88480a3c00e7319"
+  digest = "1:3e5bdbd2a071c72c778c28fd7b5dfde95cdfbcef412f364377e031877205e418"
   name = "github.com/go-openapi/spec"
   packages = ["."]
   pruneopts = "UT"
-  revision = "bce47c9386f9ecd6b86f450478a80103c3fe1402"
-  version = "0.15.0"
+  revision = "384415f06ee238aae1df5caad877de6ceac3a5c4"
+  version = "0.16.0"
 
 [[projects]]
   digest = "1:c19e41854708ff52816cff12f30d454135f350a1e4fe6ab62a8be8df75458eb0"
@@ -455,14 +454,6 @@
   version = "v1.0.6"
 
 [[projects]]
-  digest = "1:43b8a34f6390d8fbdcfd300ed52103064e9eaaecc7e50b7e3518fe246ebe8403"
-  name = "github.com/tylerb/graceful"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "4654dfbb6ad53cb5e27f37d99b02e16c1872fbbb"
-  version = "v1.2.15"
-
-[[projects]]
   digest = "1:3c1a69cdae3501bf75e76d0d86dc6f2b0a7421bc205c0cb7b96b19eed464a34d"
   name = "go.uber.org/atomic"
   packages = ["."]
@@ -622,16 +613,9 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
-    "github.com/go-openapi/errors",
     "github.com/go-openapi/loads",
     "github.com/go-openapi/runtime",
-    "github.com/go-openapi/runtime/flagext",
     "github.com/go-openapi/runtime/middleware",
-    "github.com/go-openapi/runtime/security",
-    "github.com/go-openapi/spec",
-    "github.com/go-openapi/strfmt",
-    "github.com/go-openapi/swag",
-    "github.com/go-openapi/validate",
     "github.com/go-sql-driver/mysql",
     "github.com/gobuffalo/packr",
     "github.com/golang/mock/gomock",
@@ -648,7 +632,6 @@
     "github.com/rs/cors",
     "github.com/rubenv/sql-migrate",
     "github.com/satori/go.uuid",
-    "github.com/tylerb/graceful",
     "go.uber.org/zap",
     "golang.org/x/crypto/bcrypt",
   ]

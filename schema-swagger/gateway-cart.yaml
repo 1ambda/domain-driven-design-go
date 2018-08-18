@@ -21,6 +21,27 @@ api:
           description: error
           schema:
             $ref: "./common.yaml#/definitions/Exception"
+    post:
+      tags:
+      - cart
+      operationId: addCartItem
+      parameters:
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              properties:
+                item:
+                  $ref: "./gateway-cart.yaml#/definitions/CartItem"
+                option:
+                  $ref: "./gateway-cart.yaml#/definitions/CartItemOption"
+        default:
+          description: error
+          schema:
+            $ref: "./common.yaml#/definitions/Exception"
+
 
 definitions:
   Cart:
@@ -90,10 +111,8 @@ definitions:
       cartItemID:
         type: number
         format: int64
-        required: true
       updatedAt:
         type: string
-        required: true
       quantity:
         type: number
         format: int64

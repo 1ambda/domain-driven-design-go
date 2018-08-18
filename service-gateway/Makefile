@@ -101,7 +101,8 @@ swagger.server: swagger.version
 	@ echo "[$(TAG)] ($(shell TZ=UTC date -u '+%H:%M:%S')) - Generating swagger code"
 	@ swagger generate server --spec=$(SWAGGER_SPEC) --exclude-main \
 		 --target=pkg/generated/swagger --model-package=swagmodel \
-		 --server-package=swagserver --api-package=swagapi
+		 --server-package=swagserver --api-package=swagapi \
+		 --with-flatten=full
 	@ echo ""
 
 .PHONY: swagger

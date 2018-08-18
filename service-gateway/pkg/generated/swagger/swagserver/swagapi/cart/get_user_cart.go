@@ -7,14 +7,8 @@ package cart
 
 import (
 	"net/http"
-	"strconv"
 
-	errors "github.com/go-openapi/errors"
 	middleware "github.com/go-openapi/runtime/middleware"
-	strfmt "github.com/go-openapi/strfmt"
-	swag "github.com/go-openapi/swag"
-
-	swagmodel "github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagmodel"
 )
 
 // GetUserCartHandlerFunc turns a function with the right signature into a get user cart handler
@@ -61,94 +55,4 @@ func (o *GetUserCart) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
-}
-
-// GetUserCartOKBody get user cart o k body
-// swagger:model GetUserCartOKBody
-type GetUserCartOKBody struct {
-
-	// cart
-	Cart *swagmodel.Cart `json:"cart,omitempty"`
-
-	// cart item list
-	CartItemList []*swagmodel.CartItem `json:"cartItemList"`
-}
-
-// Validate validates this get user cart o k body
-func (o *GetUserCartOKBody) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := o.validateCart(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateCartItemList(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (o *GetUserCartOKBody) validateCart(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.Cart) { // not required
-		return nil
-	}
-
-	if o.Cart != nil {
-		if err := o.Cart.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("getUserCartOK" + "." + "cart")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (o *GetUserCartOKBody) validateCartItemList(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.CartItemList) { // not required
-		return nil
-	}
-
-	for i := 0; i < len(o.CartItemList); i++ {
-		if swag.IsZero(o.CartItemList[i]) { // not required
-			continue
-		}
-
-		if o.CartItemList[i] != nil {
-			if err := o.CartItemList[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
-					return ve.ValidateName("getUserCartOK" + "." + "cartItemList" + "." + strconv.Itoa(i))
-				}
-				return err
-			}
-		}
-
-	}
-
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *GetUserCartOKBody) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *GetUserCartOKBody) UnmarshalBinary(b []byte) error {
-	var res GetUserCartOKBody
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
 }
