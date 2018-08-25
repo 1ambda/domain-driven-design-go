@@ -8,6 +8,7 @@ import (
 
 type Repository interface {
 	CreateCartIfNotExist(tx *gorm.DB, user user.User) (*Cart, e.Exception)
+	FindAllCartItems(tx *gorm.DB, cart *Cart) ([]*CartItem, e.Exception)
 }
 
 type repositoryImpl struct {
@@ -43,4 +44,25 @@ func (r *repositoryImpl) CreateCartIfNotExist(tx *gorm.DB, user user.User) (*Car
 	}
 
 	return record, nil
+}
+
+func (r *repositoryImpl) FindAllCartItems(tx *gorm.DB, cart *Cart) ([]*CartItem, e.Exception) {
+	var cartItemList []*CartItem
+
+	if err := tx.Model(cart).Related(&cartItemList).Error; err != nil {
+		ex := e.NewInternalServerException(err, "Failed to find CartItem list")
+		return nil, ex
+	}
+
+	for i := range cartItemList {
+		cartItem := cartItemList[i]
+		var cartItemOptionList []*CartItemOption
+
+		if err := tx.Model(cartItem).Related(&cartItemOptionList).Error; err != nil {
+			ex := e.NewInternalServerException(err, "Failed to find CartItemOption")
+			return nil, ex
+		}
+	}
+
+	return cartItemList, nil
 }

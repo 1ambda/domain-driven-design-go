@@ -12,7 +12,11 @@ type Cart struct {
 
 	TotalPrice uint `gorm:"column:total_price; type:UNSIGNED BIG INT; NOT NULL;"`
 
+	// foreign keys
 	UserID uint `gorm:"column:user_id" sql:"type:UNSIGNED BIG INT REFERENCES User(id) ON DELETE RESTRICT ON UPDATE CASCADE"`
+
+	// association: external
+	CartItem []*CartItem `gorm:"foreignkey:CartID"`
 }
 
 func (Cart) TableName() string {

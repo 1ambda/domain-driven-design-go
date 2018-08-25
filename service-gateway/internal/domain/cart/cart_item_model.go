@@ -14,14 +14,12 @@ type CartItem struct {
 	Quantity     uint `gorm:"column:quantity; type:UNSIGNED BIG INT; NOT NULL;"`
 	TotalPrice   uint `gorm:"column:total_price; type:UNSIGNED BIG INT; NOT NULL;"`
 
+	// foreign keys
 	CartID    uint `gorm:"column:cart_id" sql:"type:UNSIGNED BIG INT REFERENCES Cart(id) ON DELETE RESTRICT ON UPDATE CASCADE"`
 	ProductID uint `gorm:"column:product_id" sql:"type:UNSIGNED BIG INT REFERENCES Product(id) ON DELETE RESTRICT ON UPDATE CASCADE"`
 
-	// association: internal
+	// association
 	CartItemOptionList []*CartItemOption `gorm:"foreignkey:CartItemID"`
-
-	// association: external
-	Product *product.Product `gorm:"foreignkey:ProductID; save_associations:false"`
 }
 
 func (CartItem) TableName() string {
@@ -38,20 +36,20 @@ func (c* CartItem) convertToDTO() *dto.CartItem {
 
 	// get price for options
 	var optionPrice uint = 0
-	for i := range c.CartItemOptionList {
-		cartItemOption := c.CartItemOptionList[i]
-		o := cartItemOption.ProductOption
-		if o != nil && o.Price > 0 {
-			optionPrice += o.Price
-		}
-	}
+	//for i := range c.CartItemOptionList {
+	//	cartItemOption := c.CartItemOptionList[i]
+	//	o := cartItemOption.ProductOption
+	//	if o != nil && o.Price > 0 {
+	//		optionPrice += o.Price
+	//	}
+	//}
 
 	// get price for product
 	var productPrice uint = 0
-	p := c.Product
-	if p != nil && p.Price > 0 {
-		productPrice += p.Price
-	}
+	//p := c.Product
+	//if p != nil && p.Price > 0 {
+	//	productPrice += p.Price
+	//}
 
 	totalPrice := string(productPrice + optionPrice)
 
@@ -72,10 +70,11 @@ type CartItemOption struct {
 
 	Quantity           uint `gorm:"column:quantity; type:UNSIGNED BIG INT; NOT NULL;"`
 
+	// foreign keys
 	CartItemID      uint `gorm:"column:cart_item_id" sql:"type:UNSIGNED BIG INT REFERENCES CartItem(id) ON DELETE RESTRICT ON UPDATE CASCADE"`
 	ProductOptionID uint `gorm:"column:product_option_id" sql:"type:UNSIGNED BIG INT REFERENCES ProductOption(id) ON DELETE RESTRICT ON UPDATE CASCADE"`
 
-	// related models: external
+	// association: external
 	ProductOption *product.ProductOption `gorm:"save_associations:false"`
 }
 
