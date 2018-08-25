@@ -7,6 +7,7 @@ package user
 import (
 	exception "github.com/1ambda/domain-driven-design-go/service-gateway/internal/exception"
 	gomock "github.com/golang/mock/gomock"
+	gorm "github.com/jinzhu/gorm"
 	reflect "reflect"
 )
 
@@ -57,6 +58,19 @@ func (m *MockRepository) FindUserById(id uint) (*User, exception.Exception) {
 // FindUserById indicates an expected call of FindUserById
 func (mr *MockRepositoryMockRecorder) FindUserById(id interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindUserById", reflect.TypeOf((*MockRepository)(nil).FindUserById), id)
+}
+
+// FindUserByIdWithTx mocks base method
+func (m *MockRepository) FindUserByIdWithTx(tx *gorm.DB, id uint) (*User, exception.Exception) {
+	ret := m.ctrl.Call(m, "FindUserByIdWithTx", tx, id)
+	ret0, _ := ret[0].(*User)
+	ret1, _ := ret[1].(exception.Exception)
+	return ret0, ret1
+}
+
+// FindUserByIdWithTx indicates an expected call of FindUserByIdWithTx
+func (mr *MockRepositoryMockRecorder) FindUserByIdWithTx(tx, id interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindUserByIdWithTx", reflect.TypeOf((*MockRepository)(nil).FindUserByIdWithTx), tx, id)
 }
 
 // FineAllUsers mocks base method

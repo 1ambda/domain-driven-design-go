@@ -98,15 +98,30 @@ func (mr *MockRepositoryMockRecorder) AddProduct(record interface{}) *gomock.Cal
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddProduct", reflect.TypeOf((*MockRepository)(nil).AddProduct), record)
 }
 
-// FindProduct mocks base method
-func (m *MockRepository) FindProduct(id uint) (*Product, exception.Exception) {
-	ret := m.ctrl.Call(m, "FindProduct", id)
+// FindProductWithOptions mocks base method
+func (m *MockRepository) FindProductWithOptions(id uint) (*Product, []*ProductOption, exception.Exception) {
+	ret := m.ctrl.Call(m, "FindProductWithOptions", id)
 	ret0, _ := ret[0].(*Product)
-	ret1, _ := ret[1].(exception.Exception)
-	return ret0, ret1
+	ret1, _ := ret[1].([]*ProductOption)
+	ret2, _ := ret[2].(exception.Exception)
+	return ret0, ret1, ret2
 }
 
-// FindProduct indicates an expected call of FindProduct
-func (mr *MockRepositoryMockRecorder) FindProduct(id interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindProduct", reflect.TypeOf((*MockRepository)(nil).FindProduct), id)
+// FindProductWithOptions indicates an expected call of FindProductWithOptions
+func (mr *MockRepositoryMockRecorder) FindProductWithOptions(id interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindProductWithOptions", reflect.TypeOf((*MockRepository)(nil).FindProductWithOptions), id)
+}
+
+// FindAllProducts mocks base method
+func (m *MockRepository) FindAllProducts(itemCountPerPage, currentPageOffset int) (int, []*Product, exception.Exception) {
+	ret := m.ctrl.Call(m, "FindAllProducts", itemCountPerPage, currentPageOffset)
+	ret0, _ := ret[0].(int)
+	ret1, _ := ret[1].([]*Product)
+	ret2, _ := ret[2].(exception.Exception)
+	return ret0, ret1, ret2
+}
+
+// FindAllProducts indicates an expected call of FindAllProducts
+func (mr *MockRepositoryMockRecorder) FindAllProducts(itemCountPerPage, currentPageOffset interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAllProducts", reflect.TypeOf((*MockRepository)(nil).FindAllProducts), itemCountPerPage, currentPageOffset)
 }
