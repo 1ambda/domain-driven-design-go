@@ -7,13 +7,13 @@ import (
 
 type Repository interface {
 	AddCategory(record *Category) (*Category, e.Exception)
-	FindCategoryById(id uint) (*Category, e.Exception)
+	FindCategoryById(categoryID uint) (*Category, e.Exception)
 
 	AddImage(record *Image) (*Image, e.Exception)
-	FindImageById(id uint) (*Image, e.Exception)
+	FindImageById(imageID uint) (*Image, e.Exception)
 
 	AddProduct(record *Product) (*Product, e.Exception)
-	FindProductWithOptions(id uint) (*Product, []*ProductOption, e.Exception)
+	FindProductWithOptions(productID uint) (*Product, []*ProductOption, e.Exception)
 	FindAllProducts(itemCountPerPage int, currentPageOffset int) (int, []*Product, e.Exception)
 }
 
@@ -45,9 +45,9 @@ func (r *repositoryImpl) AddImage(record *Image) (*Image, e.Exception) {
 	return record, nil
 }
 
-func (r *repositoryImpl) FindCategoryById(id uint) (*Category, e.Exception) {
+func (r *repositoryImpl) FindCategoryById(categoryID uint) (*Category, e.Exception) {
 	record := &Category{}
-	err := r.db.Where("id = ?", id).First(record).Error
+	err := r.db.Where("id = ?", categoryID).First(record).Error
 
 	if err != nil {
 		if gorm.IsRecordNotFoundError(err) {
@@ -60,9 +60,9 @@ func (r *repositoryImpl) FindCategoryById(id uint) (*Category, e.Exception) {
 	return record, nil
 }
 
-func (r *repositoryImpl) FindImageById(id uint) (*Image, e.Exception) {
+func (r *repositoryImpl) FindImageById(imageID uint) (*Image, e.Exception) {
 	record := &Image{}
-	err := r.db.Where("id = ?", id).First(record).Error
+	err := r.db.Where("id = ?", imageID).First(record).Error
 
 	if err != nil {
 		if gorm.IsRecordNotFoundError(err) {
@@ -85,11 +85,11 @@ func (r *repositoryImpl) AddProduct(record *Product) (*Product, e.Exception) {
 	return record, nil
 }
 
-func (r *repositoryImpl) FindProductWithOptions(id uint) (*Product, []*ProductOption, e.Exception) {
+func (r *repositoryImpl) FindProductWithOptions(productID uint) (*Product, []*ProductOption, e.Exception) {
 	record := &Product{}
 
 	tx := r.db.Begin()
-	err := tx.Where("id = ?", id).
+	err := tx.Where("id = ?", productID).
 		Preload("Category").
 		Preload("Image").
 		First(record).
@@ -107,7 +107,7 @@ func (r *repositoryImpl) FindProductWithOptions(id uint) (*Product, []*ProductOp
 	var productOptions []*ProductOption
 
 	if err := tx.
-		Where("product_id = ?", id).
+		Where("product_id = ?", productID).
 		Find(&productOptions).
 		Error; err != nil {
 
