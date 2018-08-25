@@ -31,7 +31,7 @@ type MySQLDatabase struct {
 }
 
 func NewSQLiteDatabase(env Environment) Database {
-	logger := getDbLogger()
+	logger := GetDbLogger()
 
 	dialect := "sqlite3"
 
@@ -76,7 +76,7 @@ func (d *SQLiteDatabase) Migrate(callback func(db *gorm.DB) ()) {
 }
 
 func NewMySQLDatabase(env Environment) Database {
-	logger := getDbLogger()
+	logger := GetDbLogger()
 
 	dialect := "mysql"
 	dbConnString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
@@ -102,7 +102,7 @@ func (d *MySQLDatabase) Dialect() string {
 }
 
 func (d *MySQLDatabase) Migrate(callback func(db *gorm.DB) ()) {
-	logger := getDbLogger()
+	logger := GetDbLogger()
 
 	dialect := "mysql"
 	rawDB := d.db.DB()
@@ -174,7 +174,7 @@ func (d *MySQLDatabase) EnableDebug() {
 }
 
 func GetDatabase(callback func(db *gorm.DB) ()) *gorm.DB {
-	logger := getDbLogger()
+	logger := GetDbLogger()
 
 	env := Env
 	useSqlite := env.IsTestMode()
@@ -200,7 +200,7 @@ func GetDatabase(callback func(db *gorm.DB) ()) *gorm.DB {
 	return database.Get()
 }
 
-func getDbLogger() *zap.SugaredLogger {
+func GetDbLogger() *zap.SugaredLogger {
 	logger := GetLogger().With("context", "database")
 
 	return logger
