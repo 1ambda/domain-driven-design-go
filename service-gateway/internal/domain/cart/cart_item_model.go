@@ -1,18 +1,18 @@
 package cart
 
 import (
+	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain/product"
 	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/persistent"
 	dto "github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagmodel"
 	"time"
-	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain/product"
 )
 
 type CartItem struct {
 	persistent.BaseModel
 
-	Index        uint `gorm:"column:index; type:UNSIGNED BIG INT; NOT NULL;"`
-	Quantity     uint `gorm:"column:quantity; type:UNSIGNED BIG INT; NOT NULL;"`
-	TotalPrice   uint `gorm:"column:total_price; type:UNSIGNED BIG INT; NOT NULL;"`
+	Index      uint `gorm:"column:index; type:UNSIGNED BIG INT; NOT NULL;"`
+	Quantity   uint `gorm:"column:quantity; type:UNSIGNED BIG INT; NOT NULL;"`
+	TotalPrice uint `gorm:"column:total_price; type:UNSIGNED BIG INT; NOT NULL;"`
 
 	// foreign keys
 	CartID    uint `gorm:"column:cart_id" sql:"type:UNSIGNED BIG INT REFERENCES Cart(id) ON DELETE RESTRICT ON UPDATE CASCADE"`
@@ -26,7 +26,7 @@ func (CartItem) TableName() string {
 	return "CartItem"
 }
 
-func (c* CartItem) convertToDTO() *dto.CartItem {
+func (c *CartItem) convertToDTO() *dto.CartItem {
 	cartItemID := int64(c.ID)
 	index := int64(c.Index)
 	updatedAt := c.UpdatedAt.Format(time.RFC3339)
@@ -56,9 +56,9 @@ func (c* CartItem) convertToDTO() *dto.CartItem {
 	return &dto.CartItem{
 		CartItemID: &cartItemID,
 
-		Index: &index,
-		ProductID: &productID,
-		Quantity: &quantity,
+		Index:      &index,
+		ProductID:  &productID,
+		Quantity:   &quantity,
 		TotalPrice: &totalPrice,
 
 		UpdatedAt: &updatedAt,
@@ -68,7 +68,7 @@ func (c* CartItem) convertToDTO() *dto.CartItem {
 type CartItemOption struct {
 	persistent.BaseModel
 
-	Quantity           uint `gorm:"column:quantity; type:UNSIGNED BIG INT; NOT NULL;"`
+	Quantity uint `gorm:"column:quantity; type:UNSIGNED BIG INT; NOT NULL;"`
 
 	// foreign keys
 	CartItemID      uint `gorm:"column:cart_item_id" sql:"type:UNSIGNED BIG INT REFERENCES CartItem(id) ON DELETE RESTRICT ON UPDATE CASCADE"`
@@ -93,11 +93,9 @@ func (c *CartItemOption) convertToDTO(cartItemID uint) *dto.CartItemOption {
 		CartItemID: &signedCartItemID,
 
 		CartItemOptionID: &cartItemOptionID,
-		ProductOptionID: &productOptionID,
-		Quantity: &quantity,
+		ProductOptionID:  &productOptionID,
+		Quantity:         &quantity,
 
 		UpdatedAt: &updatedAt,
 	}
 }
-
-

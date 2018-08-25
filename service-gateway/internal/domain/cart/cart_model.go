@@ -3,8 +3,8 @@ package cart
 import (
 	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/persistent"
 	dto "github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagmodel"
-	"time"
 	"strconv"
+	"time"
 )
 
 type Cart struct {
@@ -31,10 +31,10 @@ func (c *Cart) convertToDTO(cartItemCount int) *dto.Cart {
 	updatedAt := c.UpdatedAt.Format(time.RFC3339)
 
 	dto := &dto.Cart{
-		CartID: &cartID,
-		ItemCount: &itemCount,
+		CartID:     &cartID,
+		ItemCount:  &itemCount,
 		TotalPrice: &totalPrice,
-		UpdatedAt: &updatedAt,
+		UpdatedAt:  &updatedAt,
 	}
 
 	return dto

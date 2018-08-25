@@ -3,6 +3,7 @@ package user
 import (
 	"strings"
 
+	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/config"
 	e "github.com/1ambda/domain-driven-design-go/service-gateway/internal/exception"
 	dto "github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagmodel"
 	"github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagserver/swagapi"
@@ -12,7 +13,6 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/pkg/errors"
 	"net/http"
-	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/config"
 )
 
 type AuthHandler interface {
@@ -115,7 +115,7 @@ func (c *authHandlerImpl) Configure(registry *swagapi.GatewayAPI) {
 			}
 
 			// session is valid, but user does not exist
-			_, ex :=c.userRepository.FindAuthIdentityByUID(uid)
+			_, ex := c.userRepository.FindAuthIdentityByUID(uid)
 			if ex != nil {
 				ex.Wrap("Invalid Session. User does not exist.")
 				return authapi.NewLoginDefault(ex.StatusCode()).WithPayload(ex.ToSwaggerError())

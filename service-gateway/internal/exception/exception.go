@@ -4,8 +4,8 @@ import (
 	"time"
 
 	dto "github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagmodel"
-	"strings"
 	"github.com/pkg/errors"
+	"strings"
 )
 
 const CodeBadRequest = 400

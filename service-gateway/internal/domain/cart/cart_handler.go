@@ -1,16 +1,16 @@
 package cart
 
 import (
-	"github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagserver/swagapi"
-	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain/user"
+	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain"
 	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain/product"
+	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain/user"
+	e "github.com/1ambda/domain-driven-design-go/service-gateway/internal/exception"
+	dto "github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagmodel"
+	"github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagserver/swagapi"
 	cartapi "github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagserver/swagapi/cart"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/gorilla/sessions"
 	"github.com/jinzhu/gorm"
-	e "github.com/1ambda/domain-driven-design-go/service-gateway/internal/exception"
-	dto "github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagmodel"
-	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain"
 )
 
 type CartHandler interface {
@@ -32,7 +32,7 @@ func NewCartHandler(sessionStore sessions.Store, db *gorm.DB, cartRepo Repositor
 		cartRepository:    cartRepo,
 		userRepository:    userRepo,
 		productRepository: productRepo,
-		sessionStore: sessionStore,
+		sessionStore:      sessionStore,
 	}
 }
 
@@ -70,12 +70,11 @@ func (h *cartHandlerImpl) Configure(registry *swagapi.GatewayAPI) {
 //
 //}
 
-
 func (h *cartHandlerImpl) GetUserCart(uid string) (*dto.GetCartItemsOKBody, e.Exception) {
 
 	var response *dto.GetCartItemsOKBody
 
-	domain.Transact(h.db, func(tx *gorm.DB) (e.Exception) {
+	domain.Transact(h.db, func(tx *gorm.DB) e.Exception {
 		aid, ex := h.userRepository.FindAuthIdentityByUID(uid)
 		if ex != nil {
 			ex.Wrap("User does not exist")
@@ -106,7 +105,7 @@ func (h *cartHandlerImpl) GetUserCart(uid string) (*dto.GetCartItemsOKBody, e.Ex
 		for i := range modelCartItems {
 			modelCartItem := modelCartItems[i]
 			// TODO: price
-			dtoCartItems = append(dtoCartItems,modelCartItem.convertToDTO())
+			dtoCartItems = append(dtoCartItems, modelCartItem.convertToDTO())
 		}
 
 		response = &dto.GetCartItemsOKBody{
@@ -119,4 +118,3 @@ func (h *cartHandlerImpl) GetUserCart(uid string) (*dto.GetCartItemsOKBody, e.Ex
 
 	return response, nil
 }
-

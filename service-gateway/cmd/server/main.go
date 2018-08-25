@@ -5,17 +5,17 @@ import (
 	"os"
 
 	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/config"
+	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain/cart"
 	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain/product"
 	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain/user"
+	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/rest"
+	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/test"
 	"github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagserver"
 	"github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagserver/swagapi"
 	"github.com/go-openapi/loads"
 	"github.com/go-openapi/runtime"
 	"github.com/jessevdk/go-flags"
-	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/rest"
 	"github.com/rs/cors"
-	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/test"
-	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain/cart"
 )
 
 func main() {

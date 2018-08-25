@@ -16,7 +16,7 @@ import (
 type Database interface {
 	Get() *gorm.DB
 	EnableDebug()
-	Migrate(func(db *gorm.DB) ())
+	Migrate(func(db *gorm.DB))
 	Dialect() string
 }
 
@@ -62,7 +62,7 @@ func (d *SQLiteDatabase) Dialect() string {
 	return d.dialect
 }
 
-func (d *SQLiteDatabase) Migrate(callback func(db *gorm.DB) ()) {
+func (d *SQLiteDatabase) Migrate(callback func(db *gorm.DB)) {
 	db := d.db
 	callback(db)
 
@@ -101,7 +101,7 @@ func (d *MySQLDatabase) Dialect() string {
 	return d.dialect
 }
 
-func (d *MySQLDatabase) Migrate(callback func(db *gorm.DB) ()) {
+func (d *MySQLDatabase) Migrate(callback func(db *gorm.DB)) {
 	logger := GetDbLogger()
 
 	dialect := "mysql"
@@ -173,7 +173,7 @@ func (d *MySQLDatabase) EnableDebug() {
 	d.db.Debug()
 }
 
-func GetDatabase(callback func(db *gorm.DB) ()) *gorm.DB {
+func GetDatabase(callback func(db *gorm.DB)) *gorm.DB {
 	logger := GetDbLogger()
 
 	env := Env

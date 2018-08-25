@@ -3,15 +3,15 @@ package domain
 import (
 	"github.com/jinzhu/gorm"
 
+	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/config"
 	e "github.com/1ambda/domain-driven-design-go/service-gateway/internal/exception"
 	"github.com/satori/go.uuid"
-	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/config"
 )
 
 // Transact execute the callback function with-in a transaction and rollback
 // If the callback returns an exception.
 // Transaction function is not designed to used w/ goroutine.
-func Transact(db *gorm.DB, callback func(tx *gorm.DB) (e.Exception)) (e.Exception) {
+func Transact(db *gorm.DB, callback func(tx *gorm.DB) e.Exception) e.Exception {
 	u := uuid.NewV4().String()
 	logger := config.GetDbLogger()
 

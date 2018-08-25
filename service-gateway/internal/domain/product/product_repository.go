@@ -3,7 +3,7 @@ package product
 import (
 	e "github.com/1ambda/domain-driven-design-go/service-gateway/internal/exception"
 	"github.com/jinzhu/gorm"
-	)
+)
 
 type Repository interface {
 	AddCategory(record *Category) (*Category, e.Exception)
