@@ -51,6 +51,12 @@ func (h *cartHandlerImpl) Configure(registry *swagapi.GatewayAPI) {
 
 			return cartapi.NewGetCartItemsOK().WithPayload(response)
 		})
+
+
+}
+
+func (h *cartHandlerImpl) AddCartItem(uid string) (*dto.GetCartItemsOKBody, e.Exception) {
+
 }
 
 func (h *cartHandlerImpl) GetUserCart(uid string) (*dto.GetCartItemsOKBody, e.Exception) {

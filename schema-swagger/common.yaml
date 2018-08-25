@@ -15,18 +15,18 @@ definitions:
       type:
         type: string
         enum:
-          - BadRequest
-          - Unauthorized
-          - Forbidden
-          - NotFound
-          - InternalServer
+        - BadRequest
+        - Unauthorized
+        - Forbidden
+        - NotFound
+        - InternalServer
 
   Pagination:
     type: object
     required:
-      - itemCountPerPage  # limit
-      - currentPageOffset # offset
-      - totalItemCount    # count
+    - itemCountPerPage  # limit
+    - currentPageOffset # offset
+    - totalItemCount    # count
     properties:
       itemCountPerPage:
         type: integer
