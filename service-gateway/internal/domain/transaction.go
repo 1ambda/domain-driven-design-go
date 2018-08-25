@@ -8,6 +8,9 @@ import (
 	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/config"
 )
 
+// Transact execute the callback function with-in a transaction and rollback
+// If the callback returns an exception.
+// Transaction function is not designed to used w/ goroutine.
 func Transact(db *gorm.DB, callback func(tx *gorm.DB) (e.Exception)) (e.Exception) {
 	u := uuid.NewV4().String()
 	logger := config.GetDbLogger()
