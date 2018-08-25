@@ -47,7 +47,7 @@ func init() {
       "$ref": "./gateway-auth.yaml#/api/whoami"
     },
     "/cart": {
-      "$ref": "./gateway-cart.yaml#/api/getCartItems"
+      "$ref": "./gateway-cart.yaml#/api/Cart"
     },
     "/product": {
       "$ref": "./gateway-product.yaml#/api/findAllProducts"
@@ -194,12 +194,12 @@ func init() {
         "tags": [
           "cart"
         ],
-        "operationId": "getUserCart",
+        "operationId": "getCartItems",
         "responses": {
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/getUserCartOKBody"
+              "$ref": "#/definitions/getCartItemsOKBody"
             }
           },
           "default": {
@@ -222,6 +222,29 @@ func init() {
               "type": "array",
               "items": {
                 "$ref": "#/definitions/addCartItemOKBodyItems"
+              }
+            }
+          },
+          "default": {
+            "description": "error",
+            "schema": {
+              "$ref": "#/definitions/exception"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "cart"
+        ],
+        "operationId": "removeCartItem",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/removeCartItemOKBodyItems"
               }
             }
           },
@@ -308,8 +331,11 @@ func init() {
         "item": {
           "$ref": "#/definitions/cartItem"
         },
-        "option": {
-          "$ref": "#/definitions/cartItemOption"
+        "optionList": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/cartItemOption"
+          }
         }
       },
       "x-go-gen-location": "operations"
@@ -478,7 +504,7 @@ func init() {
       },
       "x-go-gen-location": "operations"
     },
-    "getUserCartOKBody": {
+    "getCartItemsOKBody": {
       "type": "object",
       "properties": {
         "cart": {
@@ -603,6 +629,20 @@ func init() {
           "type": "string"
         }
       }
+    },
+    "removeCartItemOKBodyItems": {
+      "properties": {
+        "item": {
+          "$ref": "#/definitions/cartItem"
+        },
+        "optionList": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/cartItemOption"
+          }
+        }
+      },
+      "x-go-gen-location": "operations"
     }
   }
 }`))

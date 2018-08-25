@@ -14,9 +14,9 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// AddCartItemOKBodyItems add cart item o k body items
-// swagger:model addCartItemOKBodyItems
-type AddCartItemOKBodyItems struct {
+// RemoveCartItemOKBodyItems remove cart item o k body items
+// swagger:model removeCartItemOKBodyItems
+type RemoveCartItemOKBodyItems struct {
 
 	// item
 	Item *CartItem `json:"item,omitempty"`
@@ -25,8 +25,8 @@ type AddCartItemOKBodyItems struct {
 	OptionList []*CartItemOption `json:"optionList"`
 }
 
-// Validate validates this add cart item o k body items
-func (m *AddCartItemOKBodyItems) Validate(formats strfmt.Registry) error {
+// Validate validates this remove cart item o k body items
+func (m *RemoveCartItemOKBodyItems) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateItem(formats); err != nil {
@@ -43,7 +43,7 @@ func (m *AddCartItemOKBodyItems) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *AddCartItemOKBodyItems) validateItem(formats strfmt.Registry) error {
+func (m *RemoveCartItemOKBodyItems) validateItem(formats strfmt.Registry) error {
 
 	if swag.IsZero(m.Item) { // not required
 		return nil
@@ -61,7 +61,7 @@ func (m *AddCartItemOKBodyItems) validateItem(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *AddCartItemOKBodyItems) validateOptionList(formats strfmt.Registry) error {
+func (m *RemoveCartItemOKBodyItems) validateOptionList(formats strfmt.Registry) error {
 
 	if swag.IsZero(m.OptionList) { // not required
 		return nil
@@ -87,7 +87,7 @@ func (m *AddCartItemOKBodyItems) validateOptionList(formats strfmt.Registry) err
 }
 
 // MarshalBinary interface implementation
-func (m *AddCartItemOKBodyItems) MarshalBinary() ([]byte, error) {
+func (m *RemoveCartItemOKBodyItems) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -95,8 +95,8 @@ func (m *AddCartItemOKBodyItems) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *AddCartItemOKBodyItems) UnmarshalBinary(b []byte) error {
-	var res AddCartItemOKBodyItems
+func (m *RemoveCartItemOKBodyItems) UnmarshalBinary(b []byte) error {
+	var res RemoveCartItemOKBodyItems
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

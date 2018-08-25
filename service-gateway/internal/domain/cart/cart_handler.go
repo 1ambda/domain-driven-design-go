@@ -36,26 +36,26 @@ func NewCartHandler(sessionStore sessions.Store, db *gorm.DB, cartRepo Repositor
 }
 
 func (h *cartHandlerImpl) Configure(registry *swagapi.GatewayAPI) {
-	registry.CartGetUserCartHandler = cartapi.GetUserCartHandlerFunc(
-		func(params cartapi.GetUserCartParams) middleware.Responder {
+	registry.CartGetCartItemsHandler = cartapi.GetCartItemsHandlerFunc(
+		func(params cartapi.GetCartItemsParams) middleware.Responder {
 			// TODO: refactor: AuthUtil
 			uid, ex := user.HasAuthenticatedSession(h.sessionStore, params.HTTPRequest)
 			if ex != nil {
-				return cartapi.NewGetUserCartDefault(ex.StatusCode()).WithPayload(ex.ToSwaggerError())
+				return cartapi.NewGetCartItemsDefault(ex.StatusCode()).WithPayload(ex.ToSwaggerError())
 			}
 
 			tx := h.db.Begin()
 			if tx.Error != nil {
 				defer tx.Rollback()
 				ex := e.NewInternalServerException(tx.Error, "Unknown error occurred")
-				return cartapi.NewGetUserCartDefault(ex.StatusCode()).WithPayload(ex.ToSwaggerError())
+				return cartapi.NewGetCartItemsDefault(ex.StatusCode()).WithPayload(ex.ToSwaggerError())
 			}
 
 			aid, ex := h.userRepository.FindAuthIdentityByUID(uid)
 			if ex != nil {
 				defer tx.Rollback()
 				ex.Wrap("User does not exist")
-				return cartapi.NewGetUserCartDefault(ex.StatusCode()).WithPayload(ex.ToSwaggerError())
+				return cartapi.NewGetCartItemsDefault(ex.StatusCode()).WithPayload(ex.ToSwaggerError())
 			}
 
 			u := aid.User
@@ -63,20 +63,20 @@ func (h *cartHandlerImpl) Configure(registry *swagapi.GatewayAPI) {
 			if ex != nil {
 				defer tx.Rollback()
 				ex.Wrap("Failed to get Cart")
-				return cartapi.NewGetUserCartDefault(ex.StatusCode()).WithPayload(ex.ToSwaggerError())
+				return cartapi.NewGetCartItemsDefault(ex.StatusCode()).WithPayload(ex.ToSwaggerError())
 			}
 
 			modelCartItems, ex := h.cartRepository.FindAllCartItems(tx, modelCart)
 			if ex != nil {
 				defer tx.Rollback()
 				ex.Wrap("Failed to get CartItem list")
-				return cartapi.NewGetUserCartDefault(ex.StatusCode()).WithPayload(ex.ToSwaggerError())
+				return cartapi.NewGetCartItemsDefault(ex.StatusCode()).WithPayload(ex.ToSwaggerError())
 			}
 
 			if tx.Error != nil {
 				defer tx.Rollback()
 				ex := e.NewInternalServerException(tx.Error, "Unknown error occurred")
-				return cartapi.NewGetUserCartDefault(ex.StatusCode()).WithPayload(ex.ToSwaggerError())
+				return cartapi.NewGetCartItemsDefault(ex.StatusCode()).WithPayload(ex.ToSwaggerError())
 			}
 			tx.Commit()
 
@@ -89,11 +89,11 @@ func (h *cartHandlerImpl) Configure(registry *swagapi.GatewayAPI) {
 				dtoCartItems = append(dtoCartItems,modelCartItem.convertToDTO())
 			}
 
-			response := dto.GetUserCartOKBody{
+			response := dto.GetCartItemsOKBody{
 				Cart:         dtoCart,
 				CartItemList: dtoCartItems,
 			}
-			return cartapi.NewGetUserCartOK().WithPayload(&response)
+			return cartapi.NewGetCartItemsOK().WithPayload(&response)
 
 		})
 }

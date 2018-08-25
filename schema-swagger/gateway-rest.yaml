@@ -31,4 +31,5 @@ paths:
     $ref: "./gateway-product.yaml#/api/findOneProductWithOptions"
 
   /cart:
-    $ref: "./gateway-cart.yaml#/api/getCartItems"
+    $ref: "./gateway-cart.yaml#/api/Cart"
+

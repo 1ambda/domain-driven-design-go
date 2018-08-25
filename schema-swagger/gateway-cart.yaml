@@ -1,9 +1,9 @@
 api:
-  getCartItems:
+  Cart:
     get:
       tags:
       - cart
-      operationId: getUserCart
+      operationId: getCartItems
       parameters:
       responses:
         200:
@@ -21,6 +21,7 @@ api:
           description: error
           schema:
             $ref: "./common.yaml#/definitions/Exception"
+
     post:
       tags:
       - cart
@@ -35,8 +36,33 @@ api:
               properties:
                 item:
                   $ref: "./gateway-cart.yaml#/definitions/CartItem"
-                option:
-                  $ref: "./gateway-cart.yaml#/definitions/CartItemOption"
+                optionList:
+                  type: array
+                  items:
+                    $ref: "./gateway-cart.yaml#/definitions/CartItemOption"
+        default:
+          description: error
+          schema:
+            $ref: "./common.yaml#/definitions/Exception"
+
+    delete:
+      tags:
+      - cart
+      operationId: removeCartItem
+      parameters:
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              properties:
+                item:
+                  $ref: "./gateway-cart.yaml#/definitions/CartItem"
+                optionList:
+                  type: array
+                  items:
+                    $ref: "./gateway-cart.yaml#/definitions/CartItemOption"
         default:
           description: error
           schema:

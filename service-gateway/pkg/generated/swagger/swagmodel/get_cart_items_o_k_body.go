@@ -14,9 +14,9 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// GetUserCartOKBody get user cart o k body
-// swagger:model getUserCartOKBody
-type GetUserCartOKBody struct {
+// GetCartItemsOKBody get cart items o k body
+// swagger:model getCartItemsOKBody
+type GetCartItemsOKBody struct {
 
 	// cart
 	Cart *Cart `json:"cart,omitempty"`
@@ -25,8 +25,8 @@ type GetUserCartOKBody struct {
 	CartItemList []*CartItem `json:"cartItemList"`
 }
 
-// Validate validates this get user cart o k body
-func (m *GetUserCartOKBody) Validate(formats strfmt.Registry) error {
+// Validate validates this get cart items o k body
+func (m *GetCartItemsOKBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateCart(formats); err != nil {
@@ -43,7 +43,7 @@ func (m *GetUserCartOKBody) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *GetUserCartOKBody) validateCart(formats strfmt.Registry) error {
+func (m *GetCartItemsOKBody) validateCart(formats strfmt.Registry) error {
 
 	if swag.IsZero(m.Cart) { // not required
 		return nil
@@ -61,7 +61,7 @@ func (m *GetUserCartOKBody) validateCart(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *GetUserCartOKBody) validateCartItemList(formats strfmt.Registry) error {
+func (m *GetCartItemsOKBody) validateCartItemList(formats strfmt.Registry) error {
 
 	if swag.IsZero(m.CartItemList) { // not required
 		return nil
@@ -87,7 +87,7 @@ func (m *GetUserCartOKBody) validateCartItemList(formats strfmt.Registry) error 
 }
 
 // MarshalBinary interface implementation
-func (m *GetUserCartOKBody) MarshalBinary() ([]byte, error) {
+func (m *GetCartItemsOKBody) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -95,8 +95,8 @@ func (m *GetUserCartOKBody) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *GetUserCartOKBody) UnmarshalBinary(b []byte) error {
-	var res GetUserCartOKBody
+func (m *GetCartItemsOKBody) UnmarshalBinary(b []byte) error {
+	var res GetCartItemsOKBody
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
