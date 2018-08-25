@@ -114,6 +114,13 @@ func (c *authHandlerImpl) Configure(registry *swagapi.GatewayAPI) {
 				uid = ""
 			}
 
+			// session is valid, but user does not exist
+			_, ex :=c.userRepository.FindAuthIdentityByUID(uid)
+			if ex != nil {
+				ex.Wrap("Invalid Session. User does not exist.")
+				return authapi.NewLoginDefault(ex.StatusCode()).WithPayload(ex.ToSwaggerError())
+			}
+
 			response := &dto.AuthResponse{UID: uid}
 			return authapi.NewLoginOK().WithPayload(response)
 		})
