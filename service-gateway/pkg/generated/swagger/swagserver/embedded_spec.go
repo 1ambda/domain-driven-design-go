@@ -47,7 +47,7 @@ func init() {
       "$ref": "./gateway-auth.yaml#/api/whoami"
     },
     "/cart": {
-      "$ref": "./gateway-cart.yaml#/api/Cart"
+      "$ref": "./gateway-cart.yaml#/api/cart"
     },
     "/product": {
       "$ref": "./gateway-product.yaml#/api/findAllProducts"

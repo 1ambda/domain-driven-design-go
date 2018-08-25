@@ -1,5 +1,5 @@
 api:
-  Cart:
+  cart:
     get:
       tags:
       - cart
