@@ -9,27 +9,43 @@ REPOSITORY		= 1ambda/domain-driven-design-go
 MODULE_GATEWAY	= service-gateway
 MODULE_FRONTEND = service-frontend
 
+.PHONY: default
+default:
+	@ mmake help
+
+# Install required tools for development
 .PHONY: prepare
 prepare:
-	@ echo "[$(TAG)] ($(shell TZ=UTC date -u '+%H:%M:%S')) - Installing prerequisites"
+	@ echo "[$(TAG)] ($$(date -u '+%H:%M:%S')) - Installing prerequisites"
+	@ echo "-----------------------------------------\n"
+
 	@ $(PIP) install -U mycli
 
+# Run docker-compose for storages
 .PHONY: compose
 compose:
-	@ echo "[$(TAG)] ($(shell TZ=UTC date -u '+%H:%M:%S')) - Running docker-compose"
+	@ echo "[$(TAG)] ($$(date -u '+%H:%M:%S')) - Running docker-compose (storage only)"
+	@ echo "-----------------------------------------\n"
+
 	@ docker-compose -f docker-compose.storage.yml rm -fsv || true
 	@ docker-compose -f docker-compose.storage.yml up
 
+# Run docker-compose for storages + applications
 .PHONY: compose.all
 compose.all:
-	@ echo "[$(TAG)] ($(shell TZ=UTC date -u '+%H:%M:%S')) - Running docker-compose"
+	@ echo "[$(TAG)] ($$(date -u '+%H:%M:%S')) - Running docker-compose (storage + application)"
+	@ echo "-----------------------------------------\n"
+
 	@ GATEWAY_SRC_ROOT="$(VCS)/$(REPOSITORY)/$(MODULE_GATEWAY)" docker-compose -f docker-compose.storage.yml -f docker-compose.application.yml build
 	@ GATEWAY_SRC_ROOT="$(VCS)/$(REPOSITORY)/$(MODULE_GATEWAY)" docker-compose -f docker-compose.storage.yml -f docker-compose.application.yml rm -fsv || true
 	@ GATEWAY_SRC_ROOT="$(VCS)/$(REPOSITORY)/$(MODULE_GATEWAY)" docker-compose -f docker-compose.storage.yml -f docker-compose.application.yml up
 
+# Clean docker resources (image, volume, container and network)
 .PHONY: compose.clean
 compose.clean:
-	@ echo "[$(TAG)] ($(shell TZ=UTC date -u '+%H:%M:%S')) - Cleaning docker resources"
+	@ echo "[$(TAG)] ($$(date -u '+%H:%M:%S')) - Starting: Cleaning docker resources"
+	@ echo "-----------------------------------------\n"
+
 	@ docker stop `docker ps -a -q` || true
 	@ docker rm -f `docker ps -a -q` || true
 	@ docker rmi -f `docker images --quiet --filter "dangling=true"` || true
@@ -37,10 +53,14 @@ compose.clean:
 	@ docker network rm `docker network ls -q` || true
 
 	@ echo ""
-	@ echo "[$(TAG)] ($(shell TZ=UTC date -u '+%H:%M:%S')) - Cleaned resources: image, volume, container, network"
+	@ echo "\n-----------------------------------------"
+	@ echo "[$(TAG)] ($$(date -u '+%H:%M:%S')) - Finished: Cleaning docker resources"
 
+# Connect to docker-composed MySQL through mycli
 .PHONY: mycli
 mycli:
-	@ echo "[$(TAG)] ($(shell TZ=UTC date -u '+%H:%M:%S')) - Connecting to mysql"
+	@ echo "[$(TAG)] ($$(date -u '+%H:%M:%S')) - Connecting to MySQL through mycli"
+	@ echo "-----------------------------------------\n"
+
 	@ $(MYSQLCLIENT) -u root -h localhost application -p root
 
