@@ -14,7 +14,7 @@ import (
 
 type CartHandler interface {
 	Configure(handlerRegistry *swagapi.GatewayAPI)
-	GetUserCart(uid string) ()
+	GetUserCart(uid string) (*dto.GetCartItemsOKBody, e.Exception)
 }
 
 type cartHandlerImpl struct {
@@ -44,60 +44,65 @@ func (h *cartHandlerImpl) Configure(registry *swagapi.GatewayAPI) {
 				return cartapi.NewGetCartItemsDefault(ex.StatusCode()).WithPayload(ex.ToSwaggerError())
 			}
 
-			tx := h.db.Begin()
-			if tx.Error != nil {
-				defer tx.Rollback()
-				ex := e.NewInternalServerException(tx.Error, "Unknown error occurred")
-				return cartapi.NewGetCartItemsDefault(ex.StatusCode()).WithPayload(ex.ToSwaggerError())
-			}
-
-			aid, ex := h.userRepository.FindAuthIdentityByUID(uid)
+			response, ex := h.GetUserCart(uid)
 			if ex != nil {
-				defer tx.Rollback()
-				ex.Wrap("User does not exist")
 				return cartapi.NewGetCartItemsDefault(ex.StatusCode()).WithPayload(ex.ToSwaggerError())
 			}
 
-			u := aid.User
-			modelCart, ex := h.cartRepository.CreateCartIfNotExist(tx, u)
-			if ex != nil {
-				defer tx.Rollback()
-				ex.Wrap("Failed to get Cart")
-				return cartapi.NewGetCartItemsDefault(ex.StatusCode()).WithPayload(ex.ToSwaggerError())
-			}
-
-			modelCartItems, ex := h.cartRepository.FindAllCartItems(tx, modelCart)
-			if ex != nil {
-				defer tx.Rollback()
-				ex.Wrap("Failed to get CartItem list")
-				return cartapi.NewGetCartItemsDefault(ex.StatusCode()).WithPayload(ex.ToSwaggerError())
-			}
-
-			if tx.Error != nil {
-				defer tx.Rollback()
-				ex := e.NewInternalServerException(tx.Error, "Unknown error occurred")
-				return cartapi.NewGetCartItemsDefault(ex.StatusCode()).WithPayload(ex.ToSwaggerError())
-			}
-			tx.Commit()
-
-			dtoCart := modelCart.convertToDTO(len(modelCartItems))
-			dtoCartItems := make([]*dto.CartItem, 0)
-
-			for i := range modelCartItems {
-				modelCartItem := modelCartItems[i]
-				// TODO: price
-				dtoCartItems = append(dtoCartItems,modelCartItem.convertToDTO())
-			}
-
-			response := dto.GetCartItemsOKBody{
-				Cart:         dtoCart,
-				CartItemList: dtoCartItems,
-			}
-			return cartapi.NewGetCartItemsOK().WithPayload(&response)
-
+			return cartapi.NewGetCartItemsOK().WithPayload(response)
 		})
 }
 
-func (cartHandlerImpl) GetUserCart(uid string) () {
-	panic("implement me")
+func (h *cartHandlerImpl) GetUserCart(uid string) (*dto.GetCartItemsOKBody, e.Exception) {
+
+	tx := h.db.Begin()
+	if tx.Error != nil {
+		defer tx.Rollback()
+		ex := e.NewInternalServerException(tx.Error, "Unknown error occurred")
+		return nil, ex
+	}
+
+	aid, ex := h.userRepository.FindAuthIdentityByUID(uid)
+	if ex != nil {
+		defer tx.Rollback()
+		ex.Wrap("User does not exist")
+		return nil, ex
+	}
+
+	u := aid.User
+	modelCart, ex := h.cartRepository.CreateCartIfNotExist(tx, u)
+	if ex != nil {
+		defer tx.Rollback()
+		ex.Wrap("Failed to get Cart")
+		return nil, ex
+	}
+
+	modelCartItems, ex := h.cartRepository.FindAllCartItems(tx, modelCart)
+	if ex != nil {
+		defer tx.Rollback()
+		ex.Wrap("Failed to get CartItem list")
+		return nil, ex
+	}
+
+	if tx.Error != nil {
+		defer tx.Rollback()
+		ex := e.NewInternalServerException(tx.Error, "Unknown error occurred")
+		return nil, ex
+	}
+	tx.Commit()
+
+	dtoCart := modelCart.convertToDTO(len(modelCartItems))
+	dtoCartItems := make([]*dto.CartItem, 0)
+
+	for i := range modelCartItems {
+		modelCartItem := modelCartItems[i]
+		// TODO: price
+		dtoCartItems = append(dtoCartItems,modelCartItem.convertToDTO())
+	}
+
+	response := &dto.GetCartItemsOKBody{
+		Cart:         dtoCart,
+		CartItemList: dtoCartItems,
+	}
+	return response, nil
 }
