@@ -27,19 +27,15 @@ api:
       - cart
       operationId: addCartItem
       parameters:
+      - name: body
+        in: body
+        schema:
+          $ref: "./gateway-cart.yaml#/definitions/AddCartItemDTO"
       responses:
         200:
           description: OK
           schema:
-            type: array
-            items:
-              properties:
-                item:
-                  $ref: "./gateway-cart.yaml#/definitions/CartItem"
-                optionList:
-                  type: array
-                  items:
-                    $ref: "./gateway-cart.yaml#/definitions/CartItemOption"
+            $ref: "./gateway-cart.yaml#/definitions/AddCartItemDTO"
         default:
           description: error
           schema:
@@ -50,19 +46,15 @@ api:
       - cart
       operationId: removeCartItem
       parameters:
+      - name: body
+        in: body
+        schema:
+          $ref: "./gateway-cart.yaml#/definitions/RemoveCartItemDTO"
       responses:
         200:
           description: OK
           schema:
-            type: array
-            items:
-              properties:
-                item:
-                  $ref: "./gateway-cart.yaml#/definitions/CartItem"
-                optionList:
-                  type: array
-                  items:
-                    $ref: "./gateway-cart.yaml#/definitions/CartItemOption"
+            $ref: "./gateway-cart.yaml#/definitions/RemoveCartItemDTO"
         default:
           description: error
           schema:
@@ -143,4 +135,29 @@ definitions:
         type: number
         format: int64
       productOptionPrice:
+        type: string
+
+  AddCartItemDTO:
+    required:
+    - productID
+    - productOptionIDList
+    - quantity
+    type: object
+    properties:
+      productID:
+        type: string
+      productOptionIDList:
+        type: array
+        items:
+          type: string
+      quantity:
+        type: integer
+        format: int64
+
+  RemoveCartItemDTO:
+    required:
+    - cartItemID
+    type: object
+    properties:
+      productID:
         type: string

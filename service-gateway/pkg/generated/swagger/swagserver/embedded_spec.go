@@ -215,14 +215,20 @@ func init() {
           "cart"
         ],
         "operationId": "addCartItem",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/addCartItemDTO"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/addCartItemOKBodyItems"
-              }
+              "$ref": "#/definitions/addCartItemDTO"
             }
           },
           "default": {
@@ -238,14 +244,20 @@ func init() {
           "cart"
         ],
         "operationId": "removeCartItem",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/removeCartItemDTO"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/removeCartItemOKBodyItems"
-              }
+              "$ref": "#/definitions/removeCartItemDTO"
             }
           },
           "default": {
@@ -326,19 +338,28 @@ func init() {
     }
   },
   "definitions": {
-    "addCartItemOKBodyItems": {
+    "addCartItemDTO": {
+      "type": "object",
+      "required": [
+        "productID",
+        "productOptionIDList",
+        "quantity"
+      ],
       "properties": {
-        "item": {
-          "$ref": "#/definitions/cartItem"
+        "productID": {
+          "type": "string"
         },
-        "optionList": {
+        "productOptionIDList": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/cartItemOption"
+            "type": "string"
           }
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int64"
         }
-      },
-      "x-go-gen-location": "operations"
+      }
     },
     "authResponse": {
       "type": "object",
@@ -405,41 +426,6 @@ func init() {
         },
         "totalPrice": {
           "type": "string"
-        },
-        "updatedAt": {
-          "type": "string"
-        }
-      }
-    },
-    "cartItemOption": {
-      "type": "object",
-      "required": [
-        "cartItemOptionID",
-        "updatedAt",
-        "cartItemID",
-        "productOptionID",
-        "quantity",
-        "required"
-      ],
-      "properties": {
-        "cartItemID": {
-          "type": "number",
-          "format": "int64"
-        },
-        "cartItemOptionID": {
-          "type": "number",
-          "format": "int64"
-        },
-        "productOptionID": {
-          "type": "number",
-          "format": "int64"
-        },
-        "productOptionPrice": {
-          "type": "string"
-        },
-        "quantity": {
-          "type": "number",
-          "format": "int64"
         },
         "updatedAt": {
           "type": "string"
@@ -630,19 +616,16 @@ func init() {
         }
       }
     },
-    "removeCartItemOKBodyItems": {
+    "removeCartItemDTO": {
+      "type": "object",
+      "required": [
+        "cartItemID"
+      ],
       "properties": {
-        "item": {
-          "$ref": "#/definitions/cartItem"
-        },
-        "optionList": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/cartItemOption"
-          }
+        "productID": {
+          "type": "string"
         }
-      },
-      "x-go-gen-location": "operations"
+      }
     }
   }
 }`))

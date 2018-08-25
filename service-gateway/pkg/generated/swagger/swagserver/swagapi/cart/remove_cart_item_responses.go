@@ -25,7 +25,7 @@ type RemoveCartItemOK struct {
 	/*
 	  In: Body
 	*/
-	Payload []*swagmodel.RemoveCartItemOKBodyItems `json:"body,omitempty"`
+	Payload *swagmodel.RemoveCartItemDTO `json:"body,omitempty"`
 }
 
 // NewRemoveCartItemOK creates RemoveCartItemOK with default headers values
@@ -35,13 +35,13 @@ func NewRemoveCartItemOK() *RemoveCartItemOK {
 }
 
 // WithPayload adds the payload to the remove cart item o k response
-func (o *RemoveCartItemOK) WithPayload(payload []*swagmodel.RemoveCartItemOKBodyItems) *RemoveCartItemOK {
+func (o *RemoveCartItemOK) WithPayload(payload *swagmodel.RemoveCartItemDTO) *RemoveCartItemOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the remove cart item o k response
-func (o *RemoveCartItemOK) SetPayload(payload []*swagmodel.RemoveCartItemOKBodyItems) {
+func (o *RemoveCartItemOK) SetPayload(payload *swagmodel.RemoveCartItemDTO) {
 	o.Payload = payload
 }
 
@@ -49,15 +49,12 @@ func (o *RemoveCartItemOK) SetPayload(payload []*swagmodel.RemoveCartItemOKBodyI
 func (o *RemoveCartItemOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.WriteHeader(200)
-	payload := o.Payload
-	if payload == nil {
-		payload = make([]*swagmodel.RemoveCartItemOKBodyItems, 0, 50)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
 	}
-
-	if err := producer.Produce(rw, payload); err != nil {
-		panic(err) // let the recovery middleware deal with this
-	}
-
 }
 
 /*RemoveCartItemDefault error

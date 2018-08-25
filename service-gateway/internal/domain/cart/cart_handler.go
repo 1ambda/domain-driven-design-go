@@ -53,22 +53,42 @@ func (h *cartHandlerImpl) Configure(registry *swagapi.GatewayAPI) {
 			return cartapi.NewGetCartItemsOK().WithPayload(response)
 		})
 
-	//registry.CartAddCartItemHandler = cartapi.AddCartItemHandlerFunc(
-	//	func(params cartapi.AddCartItemParams) middleware.Responder {
-	//		uid, ex := user.HasAuthenticatedSession(h.sessionStore, params.HTTPRequest)
-	//		if ex != nil {
-	//			return cartapi.NewGetCartItemsDefault(ex.StatusCode()).WithPayload(ex.ToSwaggerError())
-	//		}
-	//
-	//		response, ex := h.AddCartItem()
-	//		return cartapi.NewAddCartItemOK().WithPayload()
-	//
-	//	})
+	registry.CartAddCartItemHandler = cartapi.AddCartItemHandlerFunc(
+		func(params cartapi.AddCartItemParams) middleware.Responder {
+			uid, ex := user.HasAuthenticatedSession(h.sessionStore, params.HTTPRequest)
+			if ex != nil {
+				return cartapi.NewGetCartItemsDefault(ex.StatusCode()).WithPayload(ex.ToSwaggerError())
+			}
+
+			response, ex := h.AddCartItem()
+			return cartapi.NewAddCartItemOK().WithPayload()
+
+		})
 }
 
-//func (h *cartHandlerImpl) AddCartItem(uid string) (*dto.AddCartItemOKBodyItems, e.Exception) {
-//
-//}
+func (h *cartHandlerImpl) AddCartItem(uid string) (*dto.AddCartItemOKBodyItems, e.Exception) {
+
+	var response *dto.AddCartItemOKBodyItems
+
+	domain.Transact(h.db, func(tx *gorm.DB) e.Exception {
+		aid, ex := h.userRepository.FindAuthIdentityByUID(uid)
+		if ex != nil {
+			ex.Wrap("User does not exist")
+			return ex
+		}
+
+		u := aid.User
+		modelCart, ex := h.cartRepository.CreateCartIfNotExist(tx, u)
+		if ex != nil {
+			ex.Wrap("Failed to get Cart")
+			return ex
+		}
+
+		return nil
+	})
+
+	return response, nil
+}
 
 func (h *cartHandlerImpl) GetUserCart(uid string) (*dto.GetCartItemsOKBody, e.Exception) {
 

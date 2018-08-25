@@ -9,7 +9,10 @@ import (
 	"net/http"
 
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
+
+	swagmodel "github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagmodel"
 )
 
 // NewRemoveCartItemParams creates a new RemoveCartItemParams object
@@ -27,6 +30,11 @@ type RemoveCartItemParams struct {
 
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
+
+	/*
+	  In: body
+	*/
+	Body *swagmodel.RemoveCartItemDTO
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -38,6 +46,22 @@ func (o *RemoveCartItemParams) BindRequest(r *http.Request, route *middleware.Ma
 
 	o.HTTPRequest = r
 
+	if runtime.HasBody(r) {
+		defer r.Body.Close()
+		var body swagmodel.RemoveCartItemDTO
+		if err := route.Consumer.Consume(r.Body, &body); err != nil {
+			res = append(res, errors.NewParseError("body", "body", "", err))
+		} else {
+			// validate body object
+			if err := body.Validate(route.Formats); err != nil {
+				res = append(res, err)
+			}
+
+			if len(res) == 0 {
+				o.Body = &body
+			}
+		}
+	}
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
