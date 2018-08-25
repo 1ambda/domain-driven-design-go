@@ -34,8 +34,6 @@ CREATE TABLE `CartItem` (
   -- columns
   `index`         INTEGER(10) UNSIGNED NOT NULL,
   `quantity`      INTEGER(10) UNSIGNED NOT NULL,
-  `product_price` INTEGER(10) UNSIGNED NOT NULL,
-  `total_price`   INTEGER(10) UNSIGNED NOT NULL,
 
   -- FK columns
   `cart_id`       INTEGER(10) UNSIGNED NOT NULL,
@@ -63,7 +61,6 @@ CREATE TABLE `CartItemOption` (
 
   -- columns
   `quantity`             INTEGER(10) UNSIGNED NOT NULL,
-  `product_option_price` INTEGER(10) UNSIGNED NOT NULL,
 
   -- FK columns
   `cart_item_id`         INTEGER(10) UNSIGNED NOT NULL,

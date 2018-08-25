@@ -44,7 +44,7 @@ func (h *productHandlerImpl) Configure(registry *swagapi.GatewayAPI) {
 				rows = append(rows, converted)
 			}
 
-			response := productapi.FindAllOKBody{
+			response := dto.FindAllOKBody{
 				Pagination: &dto.Pagination{
 					CurrentPageOffset: params.CurrentPageOffset,
 					ItemCountPerPage:  params.ItemCountPerPage,
@@ -83,7 +83,7 @@ func (h *productHandlerImpl) Configure(registry *swagapi.GatewayAPI) {
 				options = append(options, converted)
 			}
 
-			response := productapi.FindOneWithOptionsOKBody{
+			response := dto.FindOneWithOptionsOKBody{
 				Product: product.convertToDTO(),
 				Options: options,
 			}

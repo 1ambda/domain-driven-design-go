@@ -25,6 +25,10 @@ type CartItemOption struct {
 	// Required: true
 	CartItemOptionID *int64 `json:"cartItemOptionID"`
 
+	// product option ID
+	// Required: true
+	ProductOptionID *int64 `json:"productOptionID"`
+
 	// product option price
 	ProductOptionPrice string `json:"productOptionPrice,omitempty"`
 
@@ -46,6 +50,10 @@ func (m *CartItemOption) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateCartItemOptionID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateProductOptionID(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -75,6 +83,15 @@ func (m *CartItemOption) validateCartItemID(formats strfmt.Registry) error {
 func (m *CartItemOption) validateCartItemOptionID(formats strfmt.Registry) error {
 
 	if err := validate.Required("cartItemOptionID", "body", m.CartItemOptionID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *CartItemOption) validateProductOptionID(formats strfmt.Registry) error {
+
+	if err := validate.Required("productOptionID", "body", m.ProductOptionID); err != nil {
 		return err
 	}
 

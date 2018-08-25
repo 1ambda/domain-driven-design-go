@@ -74,12 +74,12 @@ func (h *cartHandlerImpl) Configure(registry *swagapi.GatewayAPI) {
 			dtoCart := modelCart.convertToDTO(len(modelCartItems))
 			dtoCartItems := make([]*dto.CartItem, 0)
 
-			//for i, _ := range modelCartItems {
-			//	//modelCartItem := modelCartItems[i]
-			//	// modelCartItem.toSwaggerModel()
-			//}
+			for i := range modelCartItems {
+				modelCartItem := modelCartItems[i]
+				dtoCartItems = append(dtoCartItems,modelCartItem.convertToDTO())
+			}
 
-			response := cartapi.GetUserCartOKBody{
+			response := dto.GetUserCartOKBody{
 				Cart:         dtoCart,
 				CartItemList: dtoCartItems,
 			}

@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/loads"
 	"github.com/go-openapi/runtime"
 	"github.com/jessevdk/go-flags"
-		"github.com/1ambda/domain-driven-design-go/service-gateway/internal/rest"
+	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/rest"
 	"github.com/rs/cors"
 	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/test"
 	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain/cart"

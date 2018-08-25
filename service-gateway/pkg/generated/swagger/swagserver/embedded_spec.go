@@ -350,7 +350,6 @@ func init() {
       "type": "object",
       "required": [
         "cartItemID",
-        "cartID",
         "updatedAt",
         "index",
         "quantity",
@@ -359,10 +358,6 @@ func init() {
         "productID"
       ],
       "properties": {
-        "cartID": {
-          "type": "number",
-          "format": "int64"
-        },
         "cartItemID": {
           "type": "number",
           "format": "int64"
@@ -394,8 +389,9 @@ func init() {
       "type": "object",
       "required": [
         "cartItemOptionID",
-        "cartItemID",
         "updatedAt",
+        "cartItemID",
+        "productOptionID",
         "quantity",
         "required"
       ],
@@ -405,6 +401,10 @@ func init() {
           "format": "int64"
         },
         "cartItemOptionID": {
+          "type": "number",
+          "format": "int64"
+        },
+        "productOptionID": {
           "type": "number",
           "format": "int64"
         },
