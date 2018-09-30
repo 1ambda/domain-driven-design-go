@@ -19,11 +19,12 @@ type AddCartItemDTO struct {
 
 	// product ID
 	// Required: true
-	ProductID *string `json:"productID"`
+	// Minimum: 1
+	ProductID *int64 `json:"productID"`
 
 	// product option ID list
 	// Required: true
-	ProductOptionIDList []string `json:"productOptionIDList"`
+	ProductOptionIDList []int64 `json:"productOptionIDList"`
 
 	// quantity
 	// Required: true
@@ -55,6 +56,10 @@ func (m *AddCartItemDTO) Validate(formats strfmt.Registry) error {
 func (m *AddCartItemDTO) validateProductID(formats strfmt.Registry) error {
 
 	if err := validate.Required("productID", "body", m.ProductID); err != nil {
+		return err
+	}
+
+	if err := validate.MinimumInt("productID", "body", int64(*m.ProductID), 1, false); err != nil {
 		return err
 	}
 

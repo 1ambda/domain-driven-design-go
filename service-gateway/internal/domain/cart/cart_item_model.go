@@ -12,7 +12,6 @@ type CartItem struct {
 
 	Index      uint `gorm:"column:index; type:UNSIGNED BIG INT; NOT NULL;"`
 	Quantity   uint `gorm:"column:quantity; type:UNSIGNED BIG INT; NOT NULL;"`
-	TotalPrice uint `gorm:"column:total_price; type:UNSIGNED BIG INT; NOT NULL;"`
 
 	// foreign keys
 	CartID    uint `gorm:"column:cart_id" sql:"type:UNSIGNED BIG INT REFERENCES Cart(id) ON DELETE RESTRICT ON UPDATE CASCADE"`

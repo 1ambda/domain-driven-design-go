@@ -7,8 +7,9 @@ import (
 )
 
 type Repository interface {
-	CreateCartIfNotExist(tx *gorm.DB, user user.User) (*Cart, e.Exception)
+	FindOrCreateCart(tx *gorm.DB, user user.User) (*Cart, e.Exception)
 	FindAllCartItems(tx *gorm.DB, cart *Cart) ([]*CartItem, e.Exception)
+	AddCartItem(tx *gorm.DB, cart *Cart, currItemCount int, quantity uint, productID uint, productOptionIDList []uint) (*CartItem, e.Exception)
 }
 
 type repositoryImpl struct {
@@ -21,7 +22,7 @@ func NewRepository(db *gorm.DB) Repository {
 	}
 }
 
-func (r *repositoryImpl) CreateCartIfNotExist(tx *gorm.DB, user user.User) (*Cart, e.Exception) {
+func (r *repositoryImpl) FindOrCreateCart(tx *gorm.DB, user user.User) (*Cart, e.Exception) {
 	record := &Cart{
 		UserID:     user.ID,
 		TotalPrice: 0,
@@ -65,4 +66,22 @@ func (r *repositoryImpl) FindAllCartItems(tx *gorm.DB, cart *Cart) ([]*CartItem,
 	}
 
 	return cartItemList, nil
+}
+
+func (r *repositoryImpl) AddCartItem(tx *gorm.DB, cart *Cart, currItemCount int, quantity uint, productID uint, productOptionIDList []uint) (*CartItem, e.Exception) {
+
+	cartItem := CartItem{
+		Index: uint(currItemCount + 1),
+		Quantity: quantity,
+
+		CartID: cart.ID,
+		ProductID: productID,
+	}
+
+	if err := tx.Create(&cartItem).Error; err != nil {
+		ex := e.NewInternalServerException(err, "Failed to create CartItem")
+		return nil, ex
+	}
+
+	return &cartItem, nil
 }

@@ -347,12 +347,15 @@ func init() {
       ],
       "properties": {
         "productID": {
-          "type": "string"
+          "type": "integer",
+          "format": "int64",
+          "minimum": 1
         },
         "productOptionIDList": {
           "type": "array",
           "items": {
-            "type": "string"
+            "type": "integer",
+            "format": "int64"
           }
         },
         "quantity": {
@@ -379,7 +382,7 @@ func init() {
       ],
       "properties": {
         "cartID": {
-          "type": "number",
+          "type": "integer",
           "format": "int64"
         },
         "itemCount": {
@@ -406,26 +409,61 @@ func init() {
       ],
       "properties": {
         "cartItemID": {
-          "type": "number",
+          "type": "integer",
           "format": "int64"
         },
         "index": {
-          "type": "number",
+          "type": "integer",
           "format": "int64"
         },
         "productID": {
-          "type": "number",
+          "type": "integer",
           "format": "int64"
         },
         "productPrice": {
           "type": "string"
         },
         "quantity": {
-          "type": "number",
+          "type": "integer",
           "format": "int64"
         },
         "totalPrice": {
           "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        }
+      }
+    },
+    "cartItemOption": {
+      "type": "object",
+      "required": [
+        "cartItemOptionID",
+        "updatedAt",
+        "cartItemID",
+        "productOptionID",
+        "quantity",
+        "required"
+      ],
+      "properties": {
+        "cartItemID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "cartItemOptionID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "productOptionID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "productOptionPrice": {
+          "type": "string"
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int64"
         },
         "updatedAt": {
           "type": "string"
@@ -499,7 +537,22 @@ func init() {
         "cartItemList": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/cartItem"
+            "$ref": "#/definitions/getCartItemsOKBodyCartItemListItems"
+          }
+        }
+      },
+      "x-go-gen-location": "operations"
+    },
+    "getCartItemsOKBodyCartItemListItems": {
+      "type": "object",
+      "properties": {
+        "cartItem": {
+          "$ref": "#/definitions/cartItem"
+        },
+        "cartItemOptionList": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/cartItemOption"
           }
         }
       },

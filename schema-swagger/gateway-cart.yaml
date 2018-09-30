@@ -16,7 +16,15 @@ api:
               cartItemList:
                 type: array
                 items:
-                  $ref: "./gateway-cart.yaml#/definitions/CartItem"
+                  type: object
+                  properties:
+                    cartItem:
+                      $ref: "./gateway-cart.yaml#/definitions/CartItem"
+                    cartItemOptionList:
+                      type: array
+                      items:
+                        $ref: "./gateway-cart.yaml#/definitions/CartItemOption"
+
         default:
           description: error
           schema:
@@ -71,7 +79,7 @@ definitions:
     - itemCount
     properties:
       cartID:
-        type: number
+        type: integer
         format: int64
       updatedAt:
         type: string
@@ -92,22 +100,22 @@ definitions:
     - productID
     properties:
       cartItemID:
-        type: number
+        type: integer
         format: int64
       updatedAt:
         type: string
       index:
-        type: number
+        type: integer
         format: int64
       quantity:
-        type: number
+        type: integer
         format: int64
       productPrice:
         type: string
       totalPrice:
         type: string
       productID:
-        type: number
+        type: integer
         format: int64
 
   CartItemOption:
@@ -121,19 +129,23 @@ definitions:
     type: object
     properties:
       cartItemOptionID:
-        type: number
+        type: integer
         format: int64
+        minimum: 1
       updatedAt:
         type: string
       cartItemID:
-        type: number
+        type: integer
         format: int64
+        minimum: 1
       quantity:
-        type: number
+        type: integer
         format: int64
+        minimum: 1
       productOptionID:
-        type: number
+        type: integer
         format: int64
+        minimum: 1
       productOptionPrice:
         type: string
 
@@ -145,14 +157,18 @@ definitions:
     type: object
     properties:
       productID:
-        type: string
+        type: integer
+        format: int64
+        minimum: 1
       productOptionIDList:
         type: array
         items:
-          type: string
+          type: integer
+          format: int64
       quantity:
         type: integer
         format: int64
+        minimum: 1
 
   RemoveCartItemDTO:
     required:

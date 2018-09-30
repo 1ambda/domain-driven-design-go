@@ -22,7 +22,7 @@ type GetCartItemsOKBody struct {
 	Cart *Cart `json:"cart,omitempty"`
 
 	// cart item list
-	CartItemList []*CartItem `json:"cartItemList"`
+	CartItemList []*GetCartItemsOKBodyCartItemListItems `json:"cartItemList"`
 }
 
 // Validate validates this get cart items o k body
