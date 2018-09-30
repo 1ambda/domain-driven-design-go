@@ -3,12 +3,12 @@ api:
   findOneProductWithOptions:
     get:
       tags:
-        - product
+      - product
       operationId: findOneWithOptions
       parameters:
-        - in: path
-          name: productID
-          type: string
+      - in: path
+        name: productID
+        type: string
       responses:
         200:
           description: OK
@@ -29,19 +29,19 @@ api:
   findAllProducts:
     get:
       tags:
-        - product
+      - product
       operationId: findAll
       parameters:
-        - name: itemCountPerPage
-          in: query
-          type: integer
-          format: int32
-          default: 10
-        - name: currentPageOffset
-          in: query
-          type: integer
-          format: int32
-          default: 0
+      - name: itemCountPerPage
+        in: query
+        type: integer
+        format: int32
+        default: 10
+      - name: currentPageOffset
+        in: query
+        type: integer
+        format: int32
+        default: 0
       responses:
         200:
           description: OK

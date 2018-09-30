@@ -7,11 +7,11 @@ import (
 	"time"
 
 	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/config"
+	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain/order"
+	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain/product"
+	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain/user"
 	"github.com/jinzhu/gorm"
 	"github.com/ory/dockertest"
-	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain/user"
-	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain/product"
-	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain/order"
 )
 
 func PrepareDatabase() (*dockertest.Pool, *dockertest.Resource, string) {

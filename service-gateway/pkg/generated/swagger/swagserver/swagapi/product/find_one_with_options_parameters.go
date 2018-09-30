@@ -56,6 +56,7 @@ func (o *FindOneWithOptionsParams) BindRequest(r *http.Request, route *middlewar
 	return nil
 }
 
+// bindProductID binds and validates parameter ProductID from path.
 func (o *FindOneWithOptionsParams) bindProductID(rawData []string, hasKey bool, formats strfmt.Registry) error {
 	var raw string
 	if len(rawData) > 0 {

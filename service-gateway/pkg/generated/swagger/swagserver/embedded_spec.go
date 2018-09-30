@@ -46,6 +46,9 @@ func init() {
     "/auth/whoami": {
       "$ref": "./gateway-auth.yaml#/api/whoami"
     },
+    "/cart": {
+      "$ref": "./gateway-cart.yaml#/api/cart"
+    },
     "/product": {
       "$ref": "./gateway-product.yaml#/api/findAllProducts"
     },
@@ -186,6 +189,86 @@ func init() {
         }
       }
     },
+    "/cart": {
+      "get": {
+        "tags": [
+          "cart"
+        ],
+        "operationId": "getCartItems",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/getCartItemsOKBody"
+            }
+          },
+          "default": {
+            "description": "error",
+            "schema": {
+              "$ref": "#/definitions/exception"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "cart"
+        ],
+        "operationId": "addCartItem",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/addCartItemDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/addCartItemDTO"
+            }
+          },
+          "default": {
+            "description": "error",
+            "schema": {
+              "$ref": "#/definitions/exception"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "cart"
+        ],
+        "operationId": "removeCartItem",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/removeCartItemDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/removeCartItemDTO"
+            }
+          },
+          "default": {
+            "description": "error",
+            "schema": {
+              "$ref": "#/definitions/exception"
+            }
+          }
+        }
+      }
+    },
     "/product": {
       "get": {
         "tags": [
@@ -255,10 +338,134 @@ func init() {
     }
   },
   "definitions": {
+    "addCartItemDTO": {
+      "type": "object",
+      "required": [
+        "productID",
+        "productOptionIDList",
+        "quantity"
+      ],
+      "properties": {
+        "productID": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 1
+        },
+        "productOptionIDList": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
     "authResponse": {
       "type": "object",
       "properties": {
         "uid": {
+          "type": "string"
+        }
+      }
+    },
+    "cart": {
+      "type": "object",
+      "required": [
+        "cartID",
+        "updatedAt",
+        "totalPrice",
+        "itemCount"
+      ],
+      "properties": {
+        "cartID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "itemCount": {
+          "type": "string"
+        },
+        "totalPrice": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        }
+      }
+    },
+    "cartItem": {
+      "type": "object",
+      "required": [
+        "cartItemID",
+        "updatedAt",
+        "index",
+        "quantity",
+        "productPrice",
+        "totalPrice",
+        "productID"
+      ],
+      "properties": {
+        "cartItemID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "index": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "productID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "productPrice": {
+          "type": "string"
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "totalPrice": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        }
+      }
+    },
+    "cartItemOption": {
+      "type": "object",
+      "required": [
+        "cartItemOptionID",
+        "updatedAt",
+        "cartItemID",
+        "productOptionID",
+        "quantity",
+        "required"
+      ],
+      "properties": {
+        "cartItemID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "cartItemOptionID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "productOptionID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "productOptionPrice": {
+          "type": "string"
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "updatedAt": {
           "type": "string"
         }
       }
@@ -317,6 +524,36 @@ func init() {
         },
         "product": {
           "$ref": "#/definitions/product"
+        }
+      },
+      "x-go-gen-location": "operations"
+    },
+    "getCartItemsOKBody": {
+      "type": "object",
+      "properties": {
+        "cart": {
+          "$ref": "#/definitions/cart"
+        },
+        "cartItemList": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/getCartItemsOKBodyCartItemListItems"
+          }
+        }
+      },
+      "x-go-gen-location": "operations"
+    },
+    "getCartItemsOKBodyCartItemListItems": {
+      "type": "object",
+      "properties": {
+        "cartItem": {
+          "$ref": "#/definitions/cartItem"
+        },
+        "cartItemOptionList": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/cartItemOption"
+          }
         }
       },
       "x-go-gen-location": "operations"
@@ -428,6 +665,17 @@ func init() {
           "type": "string"
         },
         "uid": {
+          "type": "string"
+        }
+      }
+    },
+    "removeCartItemDTO": {
+      "type": "object",
+      "required": [
+        "cartItemID"
+      ],
+      "properties": {
+        "productID": {
           "type": "string"
         }
       }

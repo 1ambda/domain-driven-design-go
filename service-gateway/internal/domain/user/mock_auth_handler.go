@@ -69,15 +69,3 @@ func (m *MockAuthHandler) Login(uid, password string) (*AuthClaim, exception.Exc
 func (mr *MockAuthHandlerMockRecorder) Login(uid, password interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Login", reflect.TypeOf((*MockAuthHandler)(nil).Login), uid, password)
 }
-
-// Logout mocks base method
-func (m *MockAuthHandler) Logout() exception.Exception {
-	ret := m.ctrl.Call(m, "Logout")
-	ret0, _ := ret[0].(exception.Exception)
-	return ret0
-}
-
-// Logout indicates an expected call of Logout
-func (mr *MockAuthHandlerMockRecorder) Logout() *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Logout", reflect.TypeOf((*MockAuthHandler)(nil).Logout))
-}

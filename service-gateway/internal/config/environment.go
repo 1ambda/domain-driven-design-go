@@ -23,17 +23,17 @@ type Environment struct {
 	ServiceId   string `envconfig:"SERVICE_ID" default:"0"`
 
 	// deployment
-	NodeName string `envconfig:"NODE_NAME" default:""`
-	PodName string `envconfig:"POD_NAME" default:""`
+	NodeName     string `envconfig:"NODE_NAME" default:""`
+	PodName      string `envconfig:"POD_NAME" default:""`
 	PodNamespace string `envconfig:"POD_NAMESPACE" default:""`
-	PodIP string `envconfig:"POD_IP" default:""`
+	PodIP        string `envconfig:"POD_IP" default:""`
 
 	// storage
-	MysqlHost     string `envconfig:"MYSQL_HOST" default:"localhost"`
-	MysqlPort     string `envconfig:"MYSQL_PORT" default:"3306"`
-	MysqlDatabase string `envconfig:"MYSQL_DATABASE" default:"application"`
-	MysqlUserName string `envconfig:"MYSQL_USERNAME" default:"root"`
-	MysqlPassword string `envconfig:"MYSQL_PASSWORD" default:"root"`
+	MysqlHost      string `envconfig:"MYSQL_HOST" default:"localhost"`
+	MysqlPort      string `envconfig:"MYSQL_PORT" default:"3306"`
+	MysqlDatabase  string `envconfig:"MYSQL_DATABASE" default:"application"`
+	MysqlUserName  string `envconfig:"MYSQL_USERNAME" default:"root"`
+	MysqlPassword  string `envconfig:"MYSQL_PASSWORD" default:"root"`
 	SchemaAssetDir string `envconfig:"SCHEMA_ASSET_DIR" default:"../../asset/sql"`
 
 	// session store
@@ -43,12 +43,13 @@ type Environment struct {
 	CorsAllowURLs []string `envconfig:"GATEWAY_COR_URLS" default:"http://localhost:8080,http://127.0.0.1:8080,http://0.0.0.0:8080"`
 
 	// debugging
-	EnableDebugSQL      bool   `envconfig:"ENABLE_DEBUG_SQL" default:"true"`
-	EnableDebugHTTP     bool   `envconfig:"ENABLE_DEBUG_HTTP" default:"true"`
-	EnableSwaggerUI     bool   `envconfig:"ENABLE_SWAGGER_UI" default:"true"`
-	EnableDebugCors     bool   `envconfig:"ENABLE_DEBUG_CORS" default:"false"`
-	DisableSessionCheck bool   `envconfig:"DISABLE_SESSION_CHECK" default:"false"`
-	LogLevel            string `envconfig:"LOG_LEVEL" default:"INFO"` // `DEBUG`, `INFO`
+	EnableDebugSQL         bool   `envconfig:"ENABLE_DEBUG_SQL" default:"true"`
+	EnableDebugTransaction bool   `envconfig:"ENABLE_DEBUG_TX" default:"false"`
+	EnableDebugHTTP        bool   `envconfig:"ENABLE_DEBUG_HTTP" default:"true"`
+	EnableSwaggerUI        bool   `envconfig:"ENABLE_SWAGGER_UI" default:"true"`
+	EnableDebugCors        bool   `envconfig:"ENABLE_DEBUG_CORS" default:"false"`
+	DisableSessionCheck    bool   `envconfig:"DISABLE_SESSION_CHECK" default:"false"`
+	LogLevel               string `envconfig:"LOG_LEVEL" default:"INFO"` // `DEBUG`, `INFO`
 
 	// copied from govvv injected values
 	BuildDate string
@@ -60,6 +61,10 @@ type Environment struct {
 
 func (e *Environment) DebugSQLEnabled() bool {
 	return e.EnableDebugSQL
+}
+
+func (e *Environment) DebugTransactionEnabled() bool {
+	return e.EnableDebugTransaction
 }
 
 func (e *Environment) DebugHTTPEnabled() bool {

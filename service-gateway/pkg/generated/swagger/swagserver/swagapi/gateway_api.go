@@ -20,6 +20,7 @@ import (
 	"github.com/go-openapi/swag"
 
 	"github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagserver/swagapi/auth"
+	"github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagserver/swagapi/cart"
 	"github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagserver/swagapi/product"
 )
 
@@ -52,11 +53,20 @@ func NewGatewayAPI(spec *loads.Document) *GatewayAPI {
 		AuthWhoamiHandler: auth.WhoamiHandlerFunc(func(params auth.WhoamiParams) middleware.Responder {
 			return middleware.NotImplemented("operation AuthWhoami has not yet been implemented")
 		}),
+		CartAddCartItemHandler: cart.AddCartItemHandlerFunc(func(params cart.AddCartItemParams) middleware.Responder {
+			return middleware.NotImplemented("operation CartAddCartItem has not yet been implemented")
+		}),
 		ProductFindAllHandler: product.FindAllHandlerFunc(func(params product.FindAllParams) middleware.Responder {
 			return middleware.NotImplemented("operation ProductFindAll has not yet been implemented")
 		}),
 		ProductFindOneWithOptionsHandler: product.FindOneWithOptionsHandlerFunc(func(params product.FindOneWithOptionsParams) middleware.Responder {
 			return middleware.NotImplemented("operation ProductFindOneWithOptions has not yet been implemented")
+		}),
+		CartGetCartItemsHandler: cart.GetCartItemsHandlerFunc(func(params cart.GetCartItemsParams) middleware.Responder {
+			return middleware.NotImplemented("operation CartGetCartItems has not yet been implemented")
+		}),
+		CartRemoveCartItemHandler: cart.RemoveCartItemHandlerFunc(func(params cart.RemoveCartItemParams) middleware.Responder {
+			return middleware.NotImplemented("operation CartRemoveCartItem has not yet been implemented")
 		}),
 	}
 }
@@ -97,10 +107,16 @@ type GatewayAPI struct {
 	AuthRegisterHandler auth.RegisterHandler
 	// AuthWhoamiHandler sets the operation handler for the whoami operation
 	AuthWhoamiHandler auth.WhoamiHandler
+	// CartAddCartItemHandler sets the operation handler for the add cart item operation
+	CartAddCartItemHandler cart.AddCartItemHandler
 	// ProductFindAllHandler sets the operation handler for the find all operation
 	ProductFindAllHandler product.FindAllHandler
 	// ProductFindOneWithOptionsHandler sets the operation handler for the find one with options operation
 	ProductFindOneWithOptionsHandler product.FindOneWithOptionsHandler
+	// CartGetCartItemsHandler sets the operation handler for the get cart items operation
+	CartGetCartItemsHandler cart.GetCartItemsHandler
+	// CartRemoveCartItemHandler sets the operation handler for the remove cart item operation
+	CartRemoveCartItemHandler cart.RemoveCartItemHandler
 
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
@@ -180,12 +196,24 @@ func (o *GatewayAPI) Validate() error {
 		unregistered = append(unregistered, "auth.WhoamiHandler")
 	}
 
+	if o.CartAddCartItemHandler == nil {
+		unregistered = append(unregistered, "cart.AddCartItemHandler")
+	}
+
 	if o.ProductFindAllHandler == nil {
 		unregistered = append(unregistered, "product.FindAllHandler")
 	}
 
 	if o.ProductFindOneWithOptionsHandler == nil {
 		unregistered = append(unregistered, "product.FindOneWithOptionsHandler")
+	}
+
+	if o.CartGetCartItemsHandler == nil {
+		unregistered = append(unregistered, "cart.GetCartItemsHandler")
+	}
+
+	if o.CartRemoveCartItemHandler == nil {
+		unregistered = append(unregistered, "cart.RemoveCartItemHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -306,6 +334,11 @@ func (o *GatewayAPI) initHandlerCache() {
 	}
 	o.handlers["GET"]["/auth/whoami"] = auth.NewWhoami(o.context, o.AuthWhoamiHandler)
 
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/cart"] = cart.NewAddCartItem(o.context, o.CartAddCartItemHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
@@ -315,6 +348,16 @@ func (o *GatewayAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/product/{productID}"] = product.NewFindOneWithOptions(o.context, o.ProductFindOneWithOptionsHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/cart"] = cart.NewGetCartItems(o.context, o.CartGetCartItemsHandler)
+
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/cart"] = cart.NewRemoveCartItem(o.context, o.CartRemoveCartItemHandler)
 
 }
 

@@ -16,7 +16,7 @@ import (
 type Database interface {
 	Get() *gorm.DB
 	EnableDebug()
-	Migrate(func(db *gorm.DB) ())
+	Migrate(func(db *gorm.DB))
 	Dialect() string
 }
 
@@ -31,7 +31,7 @@ type MySQLDatabase struct {
 }
 
 func NewSQLiteDatabase(env Environment) Database {
-	logger := getDbLogger()
+	logger := GetDbLogger()
 
 	dialect := "sqlite3"
 
@@ -62,7 +62,7 @@ func (d *SQLiteDatabase) Dialect() string {
 	return d.dialect
 }
 
-func (d *SQLiteDatabase) Migrate(callback func(db *gorm.DB) ()) {
+func (d *SQLiteDatabase) Migrate(callback func(db *gorm.DB)) {
 	db := d.db
 	callback(db)
 
@@ -76,7 +76,7 @@ func (d *SQLiteDatabase) Migrate(callback func(db *gorm.DB) ()) {
 }
 
 func NewMySQLDatabase(env Environment) Database {
-	logger := getDbLogger()
+	logger := GetDbLogger()
 
 	dialect := "mysql"
 	dbConnString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
@@ -101,8 +101,8 @@ func (d *MySQLDatabase) Dialect() string {
 	return d.dialect
 }
 
-func (d *MySQLDatabase) Migrate(callback func(db *gorm.DB) ()) {
-	logger := getDbLogger()
+func (d *MySQLDatabase) Migrate(callback func(db *gorm.DB)) {
+	logger := GetDbLogger()
 
 	dialect := "mysql"
 	rawDB := d.db.DB()
@@ -128,7 +128,8 @@ func (d *MySQLDatabase) Migrate(callback func(db *gorm.DB) ()) {
 	)
 
 	if err != nil {
-		failedMigr := migrations[appliedMigrationCount]
+		failedMigrStartIndex := appliedMigrationCount // including previous migration
+		failedMigr := migrations[failedMigrStartIndex]
 
 		logger.Warnw("Found sql migration error. Doing rollback...", "down", failedMigr.Down)
 		_, downErr := migrate.Exec(
@@ -172,8 +173,8 @@ func (d *MySQLDatabase) EnableDebug() {
 	d.db.Debug()
 }
 
-func GetDatabase(callback func(db *gorm.DB) ()) *gorm.DB {
-	logger := getDbLogger()
+func GetDatabase(callback func(db *gorm.DB)) *gorm.DB {
+	logger := GetDbLogger()
 
 	env := Env
 	useSqlite := env.IsTestMode()
@@ -199,7 +200,7 @@ func GetDatabase(callback func(db *gorm.DB) ()) *gorm.DB {
 	return database.Get()
 }
 
-func getDbLogger() *zap.SugaredLogger {
+func GetDbLogger() *zap.SugaredLogger {
 	logger := GetLogger().With("context", "database")
 
 	return logger

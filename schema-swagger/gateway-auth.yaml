@@ -3,13 +3,13 @@ api:
   register:
     post:
       tags:
-        - auth
+      - auth
       operationId: Register
       parameters:
-        - name: body
-          in: body
-          schema:
-            $ref: "./gateway-auth.yaml#/definitions/RegisterRequest"
+      - name: body
+        in: body
+        schema:
+          $ref: "./gateway-auth.yaml#/definitions/RegisterRequest"
       responses:
         200:
           description: OK
@@ -22,13 +22,13 @@ api:
   login:
     post:
       tags:
-        - auth
+      - auth
       operationId: Login
       parameters:
-        - name: body
-          in: body
-          schema:
-            $ref: "./gateway-auth.yaml#/definitions/LoginRequest"
+      - name: body
+        in: body
+        schema:
+          $ref: "./gateway-auth.yaml#/definitions/LoginRequest"
       responses:
         200:
           description: OK
@@ -42,13 +42,13 @@ api:
   logout:
     post:
       tags:
-        - auth
+      - auth
       operationId: Logout
       parameters:
-        - name: body
-          in: body
-          schema:
-            $ref: "./common.yaml#/definitions/Empty"
+      - name: body
+        in: body
+        schema:
+          $ref: "./common.yaml#/definitions/Empty"
       responses:
         200:
           description: OK
@@ -62,7 +62,7 @@ api:
   whoami:
     get:
       tags:
-        - auth
+      - auth
       operationId: Whoami
       responses:
         200:

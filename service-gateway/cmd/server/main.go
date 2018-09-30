@@ -5,16 +5,17 @@ import (
 	"os"
 
 	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/config"
+	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain/cart"
 	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain/product"
 	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/domain/user"
+	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/rest"
+	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/test"
 	"github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagserver"
 	"github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagserver/swagapi"
 	"github.com/go-openapi/loads"
 	"github.com/go-openapi/runtime"
 	"github.com/jessevdk/go-flags"
-		"github.com/1ambda/domain-driven-design-go/service-gateway/internal/rest"
 	"github.com/rs/cors"
-	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/test"
 )
 
 func main() {
@@ -31,8 +32,6 @@ func main() {
 		"service_port", env.RestPort,
 		"mode", env.Mode,
 	)
-
-	logger.Debug("asdasd")
 
 	swaggerSpec, err := loads.Analyzed(swagserver.FlatSwaggerJSON, "")
 	if err != nil {
@@ -78,7 +77,11 @@ func main() {
 
 	userRepo := user.NewRepository(db)
 	productRepo := product.NewRepository(db)
+	cartRepo := cart.NewRepository(db)
 	encryptor := user.NewEncryptor(0)
+
+	cartHandler := cart.NewCartHandler(sessionStore, db, cartRepo, userRepo, productRepo)
+	cartHandler.Configure(api)
 
 	authHandler := user.NewAuthHandler(userRepo, encryptor, sessionStore)
 	authHandler.Configure(api)

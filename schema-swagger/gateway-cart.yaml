@@ -1,0 +1,179 @@
+api:
+  cart:
+    get:
+      tags:
+      - cart
+      operationId: getCartItems
+      parameters:
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              cart:
+                $ref: "./gateway-cart.yaml#/definitions/Cart"
+              cartItemList:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    cartItem:
+                      $ref: "./gateway-cart.yaml#/definitions/CartItem"
+                    cartItemOptionList:
+                      type: array
+                      items:
+                        $ref: "./gateway-cart.yaml#/definitions/CartItemOption"
+
+        default:
+          description: error
+          schema:
+            $ref: "./common.yaml#/definitions/Exception"
+
+    post:
+      tags:
+      - cart
+      operationId: addCartItem
+      parameters:
+      - name: body
+        in: body
+        schema:
+          $ref: "./gateway-cart.yaml#/definitions/AddCartItemDTO"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "./gateway-cart.yaml#/definitions/AddCartItemDTO"
+        default:
+          description: error
+          schema:
+            $ref: "./common.yaml#/definitions/Exception"
+
+    delete:
+      tags:
+      - cart
+      operationId: removeCartItem
+      parameters:
+      - name: body
+        in: body
+        schema:
+          $ref: "./gateway-cart.yaml#/definitions/RemoveCartItemDTO"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "./gateway-cart.yaml#/definitions/RemoveCartItemDTO"
+        default:
+          description: error
+          schema:
+            $ref: "./common.yaml#/definitions/Exception"
+
+
+definitions:
+  Cart:
+    type: object
+    required:
+    - cartID
+    - updatedAt
+    - totalPrice
+    - itemCount
+    properties:
+      cartID:
+        type: integer
+        format: int64
+      updatedAt:
+        type: string
+      totalPrice:
+        type: string
+      itemCount:
+        type: string
+
+  CartItem:
+    type: object
+    required:
+    - cartItemID
+    - updatedAt
+    - index
+    - quantity
+    - productPrice
+    - totalPrice
+    - productID
+    properties:
+      cartItemID:
+        type: integer
+        format: int64
+      updatedAt:
+        type: string
+      index:
+        type: integer
+        format: int64
+      quantity:
+        type: integer
+        format: int64
+      productPrice:
+        type: string
+      totalPrice:
+        type: string
+      productID:
+        type: integer
+        format: int64
+
+  CartItemOption:
+    required:
+    - cartItemOptionID
+    - updatedAt
+    - cartItemID
+    - productOptionID
+    - quantity
+    - required
+    type: object
+    properties:
+      cartItemOptionID:
+        type: integer
+        format: int64
+        minimum: 1
+      updatedAt:
+        type: string
+      cartItemID:
+        type: integer
+        format: int64
+        minimum: 1
+      quantity:
+        type: integer
+        format: int64
+        minimum: 1
+      productOptionID:
+        type: integer
+        format: int64
+        minimum: 1
+      productOptionPrice:
+        type: string
+
+  AddCartItemDTO:
+    required:
+    - productID
+    - productOptionIDList
+    - quantity
+    type: object
+    properties:
+      productID:
+        type: integer
+        format: int64
+        minimum: 1
+      productOptionIDList:
+        type: array
+        items:
+          type: integer
+          format: int64
+      quantity:
+        type: integer
+        format: int64
+        minimum: 1
+
+  RemoveCartItemDTO:
+    required:
+    - cartItemID
+    type: object
+    properties:
+      productID:
+        type: string

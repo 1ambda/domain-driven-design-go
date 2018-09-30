@@ -1,9 +1,9 @@
 package rest
 
 import (
-	"net/http"
-	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/config"
 	"encoding/json"
+	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/config"
+	"net/http"
 )
 
 type healthCheckResponse struct {
@@ -24,10 +24,10 @@ func InjectHealthCheckMiddleware(h http.Handler) http.Handler {
 			w.WriteHeader(200)
 
 			resp := healthCheckResponse{
-				Version: env.Version,
-				Commit: env.GitCommit,
-				PodName: env.PodName,
-				PodIp: env.PodIP,
+				Version:  env.Version,
+				Commit:   env.GitCommit,
+				PodName:  env.PodName,
+				PodIp:    env.PodIP,
 				NodeName: env.NodeName,
 			}
 

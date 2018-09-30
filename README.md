@@ -13,12 +13,14 @@
     * GCE Ingress (GLBC)
     * cert-manager on GKE 
     * Cloud Build
-    * Spinnaker on GKE 
+    * (TODO) Istio 
+    * (TODO) Spinnaker on GKE 
+    * (TODO) Prometheus 
 - Containerized Applications
-    * E-commerce Domain (Simplified)
+    * (WIP) E-commerce Domain (Simplified)
     * Swagger Codegen for Server (Golang) 
     * Swagger Codegen for Client (Vue, TypeScript)
-    * Automated CI / CD Pipeline (GCB -> GCR -> Spinnaker -> GKE) 
+    * (TODO) Automated CI / CD Pipeline (GCB -> GCR -> Spinnaker -> GKE) 
     
 <br/>
     

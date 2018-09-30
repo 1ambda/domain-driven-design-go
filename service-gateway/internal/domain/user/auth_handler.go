@@ -3,6 +3,7 @@ package user
 import (
 	"strings"
 
+	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/config"
 	e "github.com/1ambda/domain-driven-design-go/service-gateway/internal/exception"
 	dto "github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagmodel"
 	"github.com/1ambda/domain-driven-design-go/service-gateway/pkg/generated/swagger/swagserver/swagapi"
@@ -12,7 +13,6 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/pkg/errors"
 	"net/http"
-	"github.com/1ambda/domain-driven-design-go/service-gateway/internal/config"
 )
 
 type AuthHandler interface {
@@ -27,7 +27,6 @@ type authHandlerImpl struct {
 	sessionStore   sessions.Store
 }
 
-const SessionSecret = "something-very-secret"
 const SessionCookieName = "SESSION"
 const SessionFieldUID = "uid"
 const SessionFieldAuthenticated = "authenticated"
@@ -115,10 +114,16 @@ func (c *authHandlerImpl) Configure(registry *swagapi.GatewayAPI) {
 				uid = ""
 			}
 
+			// session is valid, but user does not exist
+			_, ex := c.userRepository.FindAuthIdentityByUID(uid)
+			if ex != nil {
+				ex.Wrap("Invalid Session. User does not exist.")
+				return authapi.NewLoginDefault(ex.StatusCode()).WithPayload(ex.ToSwaggerError())
+			}
+
 			response := &dto.AuthResponse{UID: uid}
 			return authapi.NewLoginOK().WithPayload(response)
 		})
-
 }
 
 func (c *authHandlerImpl) Register(uid string, email string, password string) (*AuthClaim, e.Exception) {
@@ -136,7 +141,7 @@ func (c *authHandlerImpl) Register(uid string, email string, password string) (*
 
 	aid, ex := c.userRepository.CreateAuthIdentity(uid, email, encrypted)
 	if ex != nil {
-		ex.UpdateMessage("Failed to register. Can't create new account")
+		ex.Wrap("Failed to register. Can't create new account")
 		return nil, ex
 	}
 
@@ -151,7 +156,7 @@ func (c *authHandlerImpl) Login(uid string, password string) (*AuthClaim, e.Exce
 
 	aid, ex := c.userRepository.FindAuthIdentityByUID(uid)
 	if ex != nil {
-		ex.UpdateMessage("Failed to login. Invalid ID or Password")
+		ex.Wrap("Failed to login. Invalid ID or Password")
 		return nil, ex
 	}
 
@@ -169,6 +174,18 @@ func SetLoginSessionCookie(session *sessions.Session, uid string) {
 
 func CleanLoginSessionCookie(session *sessions.Session) {
 	session.Values[SessionFieldAuthenticated] = false
+}
+
+func HasAuthenticatedSession(sessionStore sessions.Store, request *http.Request) (string, e.Exception) {
+	session, _ := sessionStore.Get(request, SessionCookieName)
+	authenticated, uid := IsAuthenticated(session)
+
+	if !authenticated {
+		err := errors.New("Session is Empty")
+		return "", e.NewUnauthorizedException(err, "Please Login.")
+	}
+
+	return uid, nil
 }
 
 func IsAuthenticated(session *sessions.Session) (bool, string) {
