@@ -182,12 +182,36 @@
   version = "v1.4.0"
 
 [[projects]]
-  digest = "1:2155aded3b7f51598751f556d9a524d92b35ad4aa4bb41f2d69a0f4ca76a5bfd"
+  digest = "1:4868df29afe0468bd98f663aff34f486b2e92db41f25747d8e6855c9cd91808b"
+  name = "github.com/gobuffalo/envy"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "f3b98d4da2fa434517f47f615e217fa72ff2c51e"
+  version = "v1.6.12"
+
+[[projects]]
+  branch = "master"
+  digest = "1:3617620c7cbc54dc84ab1f674ca021c1a9f49eeaa98ff81ceb202a626c7b9c66"
+  name = "github.com/gobuffalo/packd"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "eca3b8fd66872a76119b189bbe0f58f776a2a39f"
+
+[[projects]]
+  digest = "1:bdff32be91d09c91f3348b0e038baad6c5bafe1692b940055ee820828d1c4b1b"
   name = "github.com/gobuffalo/packr"
   packages = ["."]
   pruneopts = "UT"
-  revision = "9e76dbe10b00dd1fa8f29cfa4fac72297beb32a4"
-  version = "v1.12.1"
+  revision = "2745c044a8699bced928776bfa1fc98e3148ec7e"
+  version = "v2.0.0"
+
+[[projects]]
+  branch = "master"
+  digest = "1:da425896866b704cec05178819d7f31c7d5dad4d705403607b971b326bc7fea3"
+  name = "github.com/gobuffalo/syncx"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "558ac7de985fc4f4057bff27c7bdf99e92fe0750"
 
 [[projects]]
   digest = "1:bc38c7c481812e178d85160472e231c5e1c9a7f5845d67e23ee4e706933c10d8"
@@ -262,6 +286,14 @@
   packages = ["."]
   pruneopts = "UT"
   revision = "04140366298a54a039076d798123ffa108fff46c"
+
+[[projects]]
+  digest = "1:ecd9aa82687cf31d1585d4ac61d0ba180e42e8a6182b85bd785fcca8dfeefc1b"
+  name = "github.com/joho/godotenv"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "23d116af351c84513e1946b527c88823e476be13"
+  version = "v1.3.0"
 
 [[projects]]
   digest = "1:edbef42561faa44c19129b68d1e109fbc1647f63239250391eadc8d0e7c9f669"
@@ -418,6 +450,18 @@
   pruneopts = "UT"
   revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
   version = "v0.8.0"
+
+[[projects]]
+  digest = "1:e09ada96a5a41deda4748b1659cc8953961799e798aea557257b56baee4ecaf3"
+  name = "github.com/rogpeppe/go-internal"
+  packages = [
+    "modfile",
+    "module",
+    "semver",
+  ]
+  pruneopts = "UT"
+  revision = "68d1cb014f030acd0f10ac553801e43c0e5da629"
+  version = "v1.1.0"
 
 [[projects]]
   digest = "1:0b8dd7447e420afff0260179dc892711e837edd1d446bc78dab924624a3c3c81"
