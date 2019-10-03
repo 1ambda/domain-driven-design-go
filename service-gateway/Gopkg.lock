@@ -367,18 +367,15 @@
   version = "v1.0.1"
 
 [[projects]]
-  digest = "1:1869683e323ebff2bdf8adcb560f82bf6f8d94019d35099e3403f7df12e9c07e"
+  digest = "1:38ee335aedf4626620f3cf8f605661e71abdcce7b40b38921962beb3980f0a20"
   name = "github.com/opencontainers/runc"
-  packages = [
-    "libcontainer/system",
-    "libcontainer/user",
-  ]
+  packages = ["libcontainer/user"]
   pruneopts = "UT"
   revision = "baf6536d6259209c3edfa2b22237af82942d3dfa"
   version = "v0.1.1"
 
 [[projects]]
-  digest = "1:30043aec872ed65d1a5522ebd15381c8b108edfb5ac791196c14f1e4e4325d69"
+  digest = "1:bcf2d55e2db937dc823d75e2c25b7df370515e9e6b0ebc27a30ff570daa17c2f"
   name = "github.com/ory/dockertest"
   packages = [
     ".",
@@ -408,8 +405,8 @@
     "docker/types/versions",
   ]
   pruneopts = "UT"
-  revision = "9bca068bf5e4af2484b9c2e8cfeb3d098d5327d7"
-  version = "v3.3.1"
+  revision = "0373d2b9524a523af527c5d4dfb4a60baf7a5bc5"
+  version = "v3.4.0"
 
 [[projects]]
   digest = "1:40e195917a951a8bf867cd05de2a46aaf1806c50cf92eebf4c16f78cd196f747"
