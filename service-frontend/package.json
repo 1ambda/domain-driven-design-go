@@ -13,7 +13,7 @@
   "dependencies": {
     "element-ui": "^2.4.1",
     "portable-fetch": "^3.0.0",
-    "register-service-worker": "^1.0.0",
+    "register-service-worker": "^1.7.1",
     "typescript": "^3.0.1",
     "vue": "^2.5.17",
     "vue-class-component": "^6.2.0",
